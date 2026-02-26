@@ -1,0 +1,16 @@
+# Xcode
+DerivedData/
+.build/
+
+# Xcode user data
+xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.swiftpm/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
