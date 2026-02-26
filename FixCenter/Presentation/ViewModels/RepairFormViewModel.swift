@@ -88,8 +88,12 @@ class RepairFormViewModel: ObservableObject {
         errorMessage = nil
         
         do {
-            // Comprimir y convertir imágenes
             var repairToSave = repair
+            
+            // Generar folio para nuevas reparaciones
+            if !isEditing {
+                repairToSave.folio = try await generateNextFolio()
+            }
             
             // Procesar imágenes iniciales
             repairToSave.initialPhotos = try await processImages(initialImages)
@@ -104,6 +108,21 @@ class RepairFormViewModel: ObservableObject {
         }
         
         isLoading = false
+    }
+    
+    private func generateNextFolio() async throws -> String {
+        let repairs = try await repository.fetchRepairs()
+        let year = Calendar.current.component(.year, from: Date())
+        let prefix = "OS-\(year)-"
+        
+        let numbersInYear = repairs.compactMap { repair -> Int? in
+            guard let folio = repair.folio, folio.hasPrefix(prefix) else { return nil }
+            let suffix = String(folio.dropFirst(prefix.count))
+            return Int(suffix)
+        }
+        
+        let nextNumber = (numbersInYear.max() ?? 0) + 1
+        return "\(prefix)\(String(format: "%04d", nextNumber))"
     }
     
     private func processImages(_ images: [UIImage]) async throws -> [Data] {

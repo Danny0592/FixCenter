@@ -17,9 +17,22 @@ struct RepairCard: View {
         Button(action: onTap) {
             GlassCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    // Header con estado
+                    // Header con estado y folio
                     HStack {
                         StatusBadge(status: repair.status, size: 16)
+                        
+                        if let folio = repair.folio, !folio.isEmpty {
+                            Text(folio)
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(Color.secondary.opacity(0.15))
+                                )
+                        }
                         
                         Spacer()
                         

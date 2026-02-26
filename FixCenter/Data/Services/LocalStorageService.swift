@@ -46,6 +46,7 @@ class LocalStorageService: StorageService {
         let repairs = try await fetchRepairs()
         let lowerQuery = query.lowercased()
         return repairs.filter { repair in
+            (repair.folio?.lowercased().contains(lowerQuery) ?? false) ||
             repair.customer.fullName.lowercased().contains(lowerQuery) ||
             repair.device.brand.lowercased().contains(lowerQuery) ||
             repair.device.model.lowercased().contains(lowerQuery) ||

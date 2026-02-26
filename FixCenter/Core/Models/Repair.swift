@@ -9,6 +9,7 @@ import Foundation
 
 struct Repair: Identifiable, Codable, Hashable {
     var id: UUID
+    var folio: String?
     var customer: Customer
     var device: Device
     var problemDescription: String
@@ -23,6 +24,7 @@ struct Repair: Identifiable, Codable, Hashable {
     
     init(
         id: UUID = UUID(),
+        folio: String? = nil,
         customer: Customer = Customer(),
         device: Device = Device(),
         problemDescription: String = "",
@@ -36,6 +38,7 @@ struct Repair: Identifiable, Codable, Hashable {
         price: Double? = nil
     ) {
         self.id = id
+        self.folio = folio
         self.customer = customer
         self.device = device
         self.problemDescription = problemDescription

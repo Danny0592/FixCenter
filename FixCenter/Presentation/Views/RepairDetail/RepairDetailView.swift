@@ -138,6 +138,19 @@ struct RepairDetailView: View {
         GlassCard {
             VStack(spacing: 16) {
                 HStack {
+                    if let folio = viewModel.repair.folio, !folio.isEmpty {
+                        Text(folio)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(Color.secondary.opacity(0.15))
+                            )
+                    }
+                    
                     ZStack {
                         Circle()
                             .fill(viewModel.repair.device.type.color.opacity(0.2))
