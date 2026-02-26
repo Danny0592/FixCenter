@@ -43,7 +43,7 @@ struct DeviceSectionView: View {
                             title: "Contraseña o código",
                             text: $viewModel.repair.device.password,
                             placeholder: "Para pruebas después de reparación",
-                            isSecure: true
+                            keyboardType: .namePhonePad
                         )
                     }
                 }
