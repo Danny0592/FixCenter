@@ -46,13 +46,20 @@ class RepairFormViewModel: ObservableObject {
     var canProceedToNextStep: Bool {
         switch currentStep {
         case 0: // Datos del cliente
-            return !repair.customer.fullName.isEmpty &&
-                   !repair.customer.phone.isEmpty
+            return
+            !repair.customer.fullName.isEmpty &&
+            !repair.customer.phone.isEmpty &&
+            !repair.customer.address.isEmpty &&
+            !repair.customer.email.isEmpty
         case 1: // Datos del dispositivo
-            return !repair.device.brand.isEmpty &&
-                   !repair.device.model.isEmpty
+            return
+            !repair.device.brand.isEmpty &&
+            !repair.device.model.isEmpty &&
+            !repair.device.serialNumber.isEmpty &&
+            !repair.device.password.isEmpty
         case 2: // Descripción del problema
-            return !repair.problemDescription.isEmpty
+            return
+            !repair.problemDescription.isEmpty
         case 3: // Reparación
             return true
         default:
