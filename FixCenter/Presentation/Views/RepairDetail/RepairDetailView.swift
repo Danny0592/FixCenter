@@ -208,6 +208,7 @@ struct RepairDetailView: View {
                 if !viewModel.repair.device.serialNumber.isEmpty {
                     InfoRow(icon: "number", title: "Número de serie", value: viewModel.repair.device.serialNumber)
                 }
+                InfoRow(icon: "key.fill", title: "Contraseña", value: viewModel.repair.device.password)
             }
         }
     }
