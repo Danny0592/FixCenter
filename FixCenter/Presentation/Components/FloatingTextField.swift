@@ -19,12 +19,9 @@ struct FloatingTextField: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            if !text.isEmpty || isFocused {
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.blue)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.blue)
             
             ZStack(alignment: .leading) {
                 if text.isEmpty && !isFocused {
