@@ -13,7 +13,7 @@ struct StatusBadge: View {
     
     @State private var isPulsing = false
     
-    init(status: RepairStatus, size: CGFloat = 12) {
+    init(status: RepairStatus, size: CGFloat = 18) {
         self.status = status
         self.size = size
     }
