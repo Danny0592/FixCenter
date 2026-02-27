@@ -112,7 +112,8 @@ struct RepairListView: View {
                     }
                 }
         }
-        .padding()
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.white.opacity(0.8))
@@ -122,7 +123,7 @@ struct RepairListView: View {
     
     private var filterSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 FilterChip(
                     title: "Todos",
                     isSelected: viewModel.selectedStatus == nil
