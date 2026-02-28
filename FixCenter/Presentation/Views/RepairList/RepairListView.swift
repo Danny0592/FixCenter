@@ -49,7 +49,8 @@ struct RepairListView: View {
                 }
             }
             .navigationTitle("FixCenter")
-            .navigationBarTitleDisplayMode(.large)
+//            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
