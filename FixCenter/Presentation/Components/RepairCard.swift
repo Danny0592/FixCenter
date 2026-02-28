@@ -19,7 +19,7 @@ struct RepairCard: View {
                 VStack(alignment: .leading, spacing: 12) {
                     // Header con estado y folio
                     HStack {
-                        StatusBadge(status: repair.status, size: 16)
+                        StatusBadge(status: repair.status, size: 20)
                         
                         if let folio = repair.folio, !folio.isEmpty {
                             Text(folio)
