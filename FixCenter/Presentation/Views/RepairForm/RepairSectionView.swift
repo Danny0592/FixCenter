@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RepairSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
+    @FocusState private var isTechnicianFocused: Bool
     @FocusState private var isWorkPerformedFocused: Bool
     @FocusState private var isNotesFocused: Bool
     @FocusState private var isPriceFocused: Bool
@@ -17,6 +18,35 @@ struct RepairSectionView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
+                GlassCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Label("Técnico asignado", systemImage: "person.badge.key.fill")
+                            .font(.headline)
+                            .foregroundColor(.primary)
+                        
+                        TextField("Nombre del técnico", text: $viewModel.repair.assignedTechnician)
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.white.opacity(0.8))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+                            .focused($isTechnicianFocused)
+                            .toolbar {
+                                ToolbarItemGroup(placement: .keyboard) {
+                                    Spacer()
+                                    Button("Listo") {
+                                        isTechnicianFocused = false
+                                    }
+                                    .foregroundColor(.blue)
+                                }
+                            }
+                    }
+                }
+                
                 GlassCard {
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Precio de la reparación")

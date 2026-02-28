@@ -335,6 +335,15 @@ struct RepairDetailView: View {
                 Text("Trabajo Realizado")
                     .font(.headline)
                 
+                if !viewModel.repair.assignedTechnician.isEmpty {
+                    InfoRow(
+                        icon: "person.badge.key.fill",
+                        title: "Técnico asignado",
+                        value: viewModel.repair.assignedTechnician
+                    )
+                    Divider()
+                }
+                
                 if !viewModel.repair.workPerformed.isEmpty {
                     Text(viewModel.repair.workPerformed)
                         .font(.body)

@@ -39,6 +39,16 @@ struct RepairFormView: View {
                 
                 // Botones de navegación
                 navigationButtons
+                
+                // Mensaje de error si falla el guardado
+                if let errorMessage = viewModel.errorMessage {
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .padding(.bottom, 8)
+                        .padding(.horizontal)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
             }
         }
         .navigationTitle(viewModel.isEditing ? "Editar Reparación" : "Nueva Reparación")
