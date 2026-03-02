@@ -11,6 +11,7 @@ struct RepairListView: View {
     @StateObject private var viewModel: RepairListViewModel
     @State private var showNewRepair = false
     @State private var selectedRepair: Repair? = nil
+    @FocusState private var isSearchFocused: Bool
     
     init(viewModel: RepairListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -107,11 +108,21 @@ struct RepairListView: View {
             
             TextField("Buscar reparaciones...", text: $viewModel.searchText)
                 .textFieldStyle(PlainTextFieldStyle())
+                .focused($isSearchFocused)
                 .onChange(of: viewModel.searchText) { _ in
                     Task {
                         await viewModel.searchRepairs()
                     }
                 }
+            
+            if !viewModel.searchText.isEmpty && isSearchFocused {
+                Button(action: {
+                    viewModel.searchText = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
