@@ -61,13 +61,8 @@ struct RepairDetailView: View {
                 Button(action: {
                     showEditView = true
                 }) {
-                    Image(systemName: "pencil")
-                }
-                
-                Button(action: {
-                    showStatusPicker = true
-                }) {
-                    Image(systemName: "slider.horizontal.3")
+                    Image(systemName: "pencil.and.list.clipboard")
+                        .foregroundColor(.blue)
                 }
             }
         }
@@ -198,8 +193,11 @@ struct RepairDetailView: View {
     private var customerSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Información del Cliente")
-                    .font(.headline)
+                HStack {
+                    Text("Información del Cliente")
+                        .font(.headline)
+                    Spacer()
+                }
                 
                 InfoRow(icon: "person.fill", title: "Nombre", value: viewModel.repair.customer.fullName)
                 InfoRow(icon: "phone.fill", title: "Teléfono", value: viewModel.repair.customer.phone)
@@ -212,8 +210,11 @@ struct RepairDetailView: View {
     private var deviceSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Información del Dispositivo")
-                    .font(.headline)
+                HStack {
+                    Text("Información del Dispositivo")
+                        .font(.headline)
+                    Spacer()
+                }
                 
                 InfoRow(icon: "tag.fill", title: "Tipo", value: viewModel.repair.device.type.rawValue)
                 InfoRow(icon: "building.fill", title: "Marca", value: viewModel.repair.device.brand)
@@ -299,8 +300,11 @@ struct RepairDetailView: View {
     private var problemSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Descripción del Problema")
-                    .font(.headline)
+                HStack {
+                    Text("Descripción del Problema")
+                        .font(.headline)
+                    Spacer()
+                }
                 
                 Text(viewModel.repair.problemDescription)
                     .font(.body)
@@ -332,8 +336,11 @@ struct RepairDetailView: View {
     private var workSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Trabajo Realizado")
-                    .font(.headline)
+                HStack {
+                    Text("Trabajo Realizado")
+                        .font(.headline)
+                    Spacer()
+                }
                 
                 if !viewModel.repair.assignedTechnician.isEmpty {
                     InfoRow(
