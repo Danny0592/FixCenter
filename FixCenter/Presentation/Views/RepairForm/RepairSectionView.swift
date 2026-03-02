@@ -24,26 +24,37 @@ struct RepairSectionView: View {
                             .font(.headline)
                             .foregroundColor(.primary)
                         
-                        TextField("Nombre del técnico", text: $viewModel.repair.assignedTechnician)
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white.opacity(0.8))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                            )
-                            .focused($isTechnicianFocused)
-                            .toolbar {
-                                ToolbarItemGroup(placement: .keyboard) {
-                                    Spacer()
-                                    Button("Listo") {
-                                        isTechnicianFocused = false
-                                    }
-                                    .foregroundColor(.blue)
+                        HStack {
+                            TextField("Nombre del técnico", text: $viewModel.repair.assignedTechnician)
+                                .focused($isTechnicianFocused)
+                            
+                            if !viewModel.repair.assignedTechnician.isEmpty && isTechnicianFocused {
+                                Button(action: {
+                                    viewModel.repair.assignedTechnician = ""
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray)
                                 }
                             }
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.white.opacity(0.8))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                        )
+                        .toolbar {
+                            ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button("Listo") {
+                                    isTechnicianFocused = false
+                                }
+                                .foregroundColor(.blue)
+                            }
+                        }
                     }
                 }
                 
@@ -73,6 +84,16 @@ struct RepairSectionView: View {
                                         priceText = String(format: "%.2f", price)
                                     }
                                 }
+                            
+                            if !priceText.isEmpty && isPriceFocused {
+                                Button(action: {
+                                    priceText = ""
+                                    viewModel.repair.price = nil
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray)
+                                }
+                            }
                         }
                         .padding()
                         .background(

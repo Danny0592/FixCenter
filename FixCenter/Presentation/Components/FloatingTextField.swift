@@ -23,31 +23,35 @@ struct FloatingTextField: View {
                 .font(.caption)
                 .foregroundColor(.blue)
             
-            ZStack(alignment: .leading) {
-                if text.isEmpty && !isFocused {
-                    Text(placeholder.isEmpty ? title : placeholder)
-                        .foregroundColor(.gray.opacity(0.6))
+            HStack {
+                ZStack(alignment: .leading) {
+                    if text.isEmpty && !isFocused {
+                        Text(placeholder.isEmpty ? title : placeholder)
+                            .foregroundColor(.gray.opacity(0.6))
+                    }
+                    
+                    Group {
+                        if isSecure {
+                            SecureField("", text: $text)
+                        } else {
+                            TextField("", text: $text)
+                        }
+                    }
+                    .focused($isFocused)
+                    .keyboardType(keyboardType)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
                 }
                 
-                Group {
-                    if isSecure {
-                        SecureField("", text: $text)
-                    } else {
-                        TextField("", text: $text)
+                if !text.isEmpty && isFocused {
+                    Button(action: {
+                        text = ""
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray.opacity(0.5))
+                            .font(.system(size: 16))
                     }
-                }
-                .focused($isFocused)
-                .keyboardType(keyboardType)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button("Listo") {
-                            isFocused = false
-                        }
-                        .foregroundColor(.blue)
-                    }
+                    .transition(.opacity)
                 }
             }
             .padding()
@@ -59,6 +63,15 @@ struct FloatingTextField: View {
                             .stroke(borderColor, lineWidth: 2)
                     )
             )
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Listo") {
+                        isFocused = false
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
         }
         .onChange(of: isFocused) { focused in
             withAnimation(.easeInOut(duration: 0.2)) {
