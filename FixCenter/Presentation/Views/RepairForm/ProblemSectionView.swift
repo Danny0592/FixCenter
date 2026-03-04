@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista de descripcion del problema
 struct ProblemSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     @FocusState private var isProblemDescriptionFocused: Bool

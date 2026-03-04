@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista datos del cliente
 struct CustomerSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     

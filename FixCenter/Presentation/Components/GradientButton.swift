@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Componente de botones
 struct GradientButton: View {
     let title: String
     let action: () -> Void

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista de detalle de reparacion
 struct RepairSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     @FocusState private var isTechnicianFocused: Bool

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Componente de StatusBadge
 struct StatusBadge: View {
     let status: RepairStatus
     let size: CGFloat

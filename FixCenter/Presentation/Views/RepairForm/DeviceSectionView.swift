@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista de informacion del dispositivo
 struct DeviceSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     
