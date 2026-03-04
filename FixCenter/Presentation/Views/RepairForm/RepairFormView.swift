@@ -99,41 +99,20 @@ struct RepairFormView: View {
                              viewModel.currentStep > 0 && 
                              viewModel.currentStep < viewModel.totalSteps - 1
         
-        return HStack(spacing: hasThreeButtons ? 8 : 16) {
+        return HStack(spacing: hasThreeButtons ? 12 : 26) {
             if viewModel.currentStep > 0 {
-                Button(action: {
-                    viewModel.previousStep()
-                }) {
-                    if hasThreeButtons {
-                        // Botón compacto cuando hay 3 botones
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.blue)
-                            .frame(width: 44, height: 44)
-                            .background(
-                                Circle()
-                                    .fill(Color.blue.opacity(0.1))
-                            )
-                    } else {
-                        // Botón normal cuando hay menos botones
-                        HStack(spacing: 6) {
-                            Image(systemName: "chevron.left")
-                            Text("Anterior")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(.blue)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.blue.opacity(0.1))
-                        )
-                    }
-                }
+                GradientButton(
+                    title: "Anterior",
+                    action: {
+                        viewModel.previousStep()
+                    },
+                    icon: "chevron.left",
+                    isCompact: hasThreeButtons
+                )
             }
             
-            // Si está en modo edición, mostrar botón de guardar en todos los pasos
             if viewModel.isEditing {
+                // Botón Guardar siempre presente en edición
                 GradientButton(
                     title: "Guardar",
                     action: {
@@ -149,8 +128,8 @@ struct RepairFormView: View {
                     isCompact: hasThreeButtons
                 )
                 
-                // Si no es el último paso, también mostrar "Siguiente"
                 if viewModel.currentStep < viewModel.totalSteps - 1 {
+                    // Botón Siguiente si no es el final
                     GradientButton(
                         title: "Siguiente",
                         action: {
@@ -160,10 +139,10 @@ struct RepairFormView: View {
                         isCompact: hasThreeButtons
                     )
                     .disabled(!viewModel.canProceedToNextStep)
-                    .opacity(viewModel.canProceedToNextStep ? 1 : 0.5)
+                    .opacity(viewModel.canProceedToNextStep ? 1 : 0.6)
                 }
             } else {
-                // Modo creación: comportamiento original
+                // Modo creación: comportamiento original pero con diseño mejorado
                 if viewModel.currentStep < viewModel.totalSteps - 1 {
                     GradientButton(
                         title: "Siguiente",
@@ -173,7 +152,7 @@ struct RepairFormView: View {
                         icon: "chevron.right"
                     )
                     .disabled(!viewModel.canProceedToNextStep)
-                    .opacity(viewModel.canProceedToNextStep ? 1 : 0.5)
+                    .opacity(viewModel.canProceedToNextStep ? 1 : 0.6)
                 } else {
                     GradientButton(
                         title: "Guardar",
@@ -185,18 +164,26 @@ struct RepairFormView: View {
                                 }
                             }
                         },
-                        icon: "checkmark",
+                        icon: "checkmark.circle.fill",
                         isLoading: viewModel.isLoading
                     )
                 }
             }
         }
-        .padding(hasThreeButtons ? .horizontal : [])
-        .padding(.vertical)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(
-            Rectangle()
-                .fill(.ultraThinMaterial)
+            ZStack {
+                Capsule()
+                    .fill(.ultraThinMaterial)
+                Capsule()
+                    .stroke(Color.white.opacity(0.5), lineWidth: 1)
+            }
+            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
         )
+        .padding(.horizontal)
+        .padding(.bottom, 12)
+        .animation(.snappy(duration: 0.3), value: viewModel.currentStep)
     }
 }
 
