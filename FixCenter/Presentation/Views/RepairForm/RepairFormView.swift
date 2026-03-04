@@ -100,9 +100,23 @@ struct RepairFormView: View {
         }
         .padding()
         .background(
-            Rectangle()
-                .fill(.ultraThinMaterial)
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                
+                Rectangle()
+                    .fill(Color.white.opacity(0.4)) // Tinte blanco para brillo
+                
+                VStack {
+                    Spacer()
+                    Rectangle()
+                        .fill(Color.white.opacity(0.3))
+                        .frame(height: 1) // Línea inferior sutil
+                }
+            }
+                .cornerRadius(10)
         )
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
     
     private var stepTitle: String {

@@ -55,7 +55,7 @@ struct RepairDetailView: View {
             }
             .padding()
         }
-        .background(AppColors.backgroundGradient.ignoresSafeArea())
+        .background(AppColors.backgroundGradient.ignoresSafeArea()) // fondo completo blaco azulado
         .navigationTitle("Detalle de Reparación")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
