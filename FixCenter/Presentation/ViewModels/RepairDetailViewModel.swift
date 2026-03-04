@@ -19,6 +19,7 @@ class RepairDetailViewModel: ObservableObject {
     @Published var finalImageUIs: [UIImage] = []
     
     let repository: RepairRepository
+    private let imageService: ImageService = ImageStorageService() // For compression if needed
     
     init(repair: Repair, repository: RepairRepository) {
         self.repair = repair
@@ -58,7 +59,7 @@ class RepairDetailViewModel: ObservableObject {
             
             if !finalImageUIs.isEmpty {
                 repair.finalPhotos = finalImageUIs.compactMap { image in
-                    image.jpegData(compressionQuality: 0.8)
+                    imageService.compressImage(image, maxSizeKB: 500) ?? image.jpegData(compressionQuality: 0.8)
                 }
             }
             
