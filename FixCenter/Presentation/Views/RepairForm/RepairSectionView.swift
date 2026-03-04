@@ -185,6 +185,7 @@ struct RepairSectionView: View {
                 }
             }
             .padding()
+            .padding(.bottom, 120) // Un poco más de espacio aquí por ser la última sección
         }
         .hideKeyboardOnTap()
     }

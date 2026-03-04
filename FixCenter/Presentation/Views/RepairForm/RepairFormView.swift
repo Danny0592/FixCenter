@@ -21,33 +21,37 @@ struct RepairFormView: View {
                 // Indicador de progreso
                 progressIndicator
                 
-                // Contenido del formulario
-                TabView(selection: $viewModel.currentStep) {
-                    CustomerSectionView(viewModel: viewModel)
-                        .tag(0)
+                // Contenido del formulario + Botones flotantes
+                ZStack(alignment: .bottom) {
+                    TabView(selection: $viewModel.currentStep) {
+                        CustomerSectionView(viewModel: viewModel)
+                            .tag(0)
+                        
+                        DeviceSectionView(viewModel: viewModel)
+                            .tag(1)
+                        
+                        ProblemSectionView(viewModel: viewModel)
+                            .tag(2)
+                        
+                        RepairSectionView(viewModel: viewModel)
+                            .tag(3)
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .ignoresSafeArea(edges: .bottom)
                     
-                    DeviceSectionView(viewModel: viewModel)
-                        .tag(1)
-                    
-                    ProblemSectionView(viewModel: viewModel)
-                        .tag(2)
-                    
-                    RepairSectionView(viewModel: viewModel)
-                        .tag(3)
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                
-                // Botones de navegación
-                navigationButtons
-                
-                // Mensaje de error si falla el guardado
-                if let errorMessage = viewModel.errorMessage {
-                    Text(errorMessage)
-                        .font(.caption)
-                        .foregroundColor(.red)
-                        .padding(.bottom, 8)
-                        .padding(.horizontal)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    // Barra de navegación flotante
+                    VStack(spacing: 8) {
+                        navigationButtons
+                        
+                        if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                                .padding(.bottom, 8)
+                                .padding(.horizontal)
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
+                        }
+                    }
                 }
             }
         }

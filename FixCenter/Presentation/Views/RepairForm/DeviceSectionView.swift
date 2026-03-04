@@ -49,6 +49,7 @@ struct DeviceSectionView: View {
                 }
             }
             .padding()
+            .padding(.bottom, 100)
         }
         .hideKeyboardOnTap()
     }
