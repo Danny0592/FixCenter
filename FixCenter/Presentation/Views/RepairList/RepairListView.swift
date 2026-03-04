@@ -171,8 +171,8 @@ struct RepairListView: View {
     
     private var emptyStateView: some View {
         VStack(spacing: 20) {
-            Image(systemName: "tray")
-                .font(.system(size: 60))
+            Image(systemName: "wrench.and.screwdriver")
+                .font(.system(size: 50))
                 .foregroundColor(.gray.opacity(0.5))
             
             Text("No hay reparaciones")
@@ -185,7 +185,7 @@ struct RepairListView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
-        .padding(.top, 100)
+        .padding(.bottom, 100)
     }
 }
 
