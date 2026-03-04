@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista para generar un servicio de reparacion
 struct RepairFormView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     @Environment(\.dismiss) var dismiss
@@ -18,25 +18,42 @@ struct RepairFormView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                // Indicador de progreso
+                // Indicador de progreso del formulario de Nueva Reparación
                 progressIndicator
                 
                 // Contenido del formulario + Botones flotantes
                 ZStack(alignment: .bottom) {
-                    TabView(selection: $viewModel.currentStep) {
-                        CustomerSectionView(viewModel: viewModel)
-                            .tag(0)
-                        
-                        DeviceSectionView(viewModel: viewModel)
-                            .tag(1)
-                        
-                        ProblemSectionView(viewModel: viewModel)
-                            .tag(2)
-                        
-                        RepairSectionView(viewModel: viewModel)
-                            .tag(3)
+                    Group {
+                        switch viewModel.currentStep {
+                        case 0:
+                            CustomerSectionView(viewModel: viewModel)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                ))
+                        case 1:
+                            DeviceSectionView(viewModel: viewModel)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                ))
+                        case 2:
+                            ProblemSectionView(viewModel: viewModel)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                ))
+                        case 3:
+                            RepairSectionView(viewModel: viewModel)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                ))
+                        default:
+                            EmptyView()
+                        }
                     }
-                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.currentStep)
                     .ignoresSafeArea(edges: .bottom)
                     
                     // Barra de navegación flotante
@@ -99,8 +116,8 @@ struct RepairFormView: View {
     }
     
     private var navigationButtons: some View {
-        let hasThreeButtons = viewModel.isEditing && 
-                             viewModel.currentStep > 0 && 
+        let hasThreeButtons = viewModel.isEditing &&
+                             viewModel.currentStep > 0 &&
                              viewModel.currentStep < viewModel.totalSteps - 1
         
         return HStack(spacing: hasThreeButtons ? 12 : 26) {
@@ -190,6 +207,7 @@ struct RepairFormView: View {
         .animation(.snappy(duration: 0.3), value: viewModel.currentStep)
     }
 }
+    
 
 #Preview {
     NavigationStack {

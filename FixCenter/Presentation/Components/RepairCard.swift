@@ -6,12 +6,10 @@
 //
 
 import SwiftUI
-
+// TODO: Componente de servicio de reparacion
 struct RepairCard: View {
     let repair: Repair
     let onTap: () -> Void
-    
-    @State private var isPressed = false
     
     var body: some View {
         Button(action: onTap) {
@@ -101,14 +99,15 @@ struct RepairCard: View {
                 }
             }
         }
-        .buttonStyle(PlainButtonStyle())
-        .scaleEffect(isPressed ? 0.98 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in isPressed = true }
-                .onEnded { _ in isPressed = false }
-        )
+        .buttonStyle(RepairCardButtonStyle())
+    }
+}
+
+struct RepairCardButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
     }
 }
 
