@@ -16,39 +16,51 @@ struct RepairListView: View {
     init(viewModel: RepairListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
-    
     var body: some View {
         NavigationStack {
-            ZStack {
-                // Fondo con gradiente
-                AppColors.backgroundGradient
-                    .ignoresSafeArea()
+            VStack(spacing: 0) {
+                // Header con búsqueda y filtros (fijos arriba)
+                VStack(spacing: 16) {
+                    searchSection
+                    filterSection
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
                 
-                ScrollView {
-                    VStack(spacing: 16) {
-                        // Header con búsqueda
-                        searchSection
-                        
-                        // Filtros rápidos
-                        filterSection
-                        
-                        // Lista de reparaciones
-                        if viewModel.isLoading {
-                            ProgressView()
-                                .padding(.top, 50)
-                        } else if viewModel.filteredRepairs.isEmpty {
-                            emptyStateView
-                        } else {
-                            repairsList
+                // Lista de reparaciones
+                if viewModel.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if viewModel.filteredRepairs.isEmpty {
+                    emptyStateView
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    List {
+                        ForEach(viewModel.filteredRepairs) { repair in
+                            RepairCard(repair: repair) {
+                                selectedRepair = repair
+                            }
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button(role: .destructive) {
+                                    Task {
+                                        await viewModel.deleteRepair(repair)
+                                    }
+                                } label: {
+                                    Label("Eliminar", systemImage: "trash")
+                                }
+                            }
                         }
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 8)
-                }
-                .refreshable {
-                    await viewModel.loadRepairs()
+                    .listStyle(.plain)
+                    .refreshable {
+                        await viewModel.loadRepairs()
+                    }
                 }
             }
+            .background(AppColors.backgroundGradient.ignoresSafeArea())
             .navigationTitle("FixCenter")
 //            .navigationBarTitleDisplayMode(.large)
             .navigationBarTitleDisplayMode(.inline)
@@ -157,29 +169,10 @@ struct RepairListView: View {
         }
     }
     
-    private var repairsList: some View {
-        LazyVStack(spacing: 16) {
-            ForEach(viewModel.filteredRepairs) { repair in
-                RepairCard(repair: repair) {
-                    selectedRepair = repair
-                }
-                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button(role: .destructive) {
-                        Task {
-                            await viewModel.deleteRepair(repair)
-                        }
-                    } label: {
-                        Label("Eliminar", systemImage: "trash")
-                    }
-                }
-            }
-        }
-    }
-    
     private var emptyStateView: some View {
         VStack(spacing: 20) {
-            Image(systemName: "tray")
-                .font(.system(size: 60))
+            Image(systemName: "wrench.and.screwdriver")
+                .font(.system(size: 50))
                 .foregroundColor(.gray.opacity(0.5))
             
             Text("No hay reparaciones")
@@ -192,7 +185,7 @@ struct RepairListView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
         }
-        .padding(.top, 100)
+        .padding(.bottom, 100)
     }
 }
 

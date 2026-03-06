@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Componente de "placeholder"
 struct FloatingTextField: View {
     let title: String
     @Binding var text: String

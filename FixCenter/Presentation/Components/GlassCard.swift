@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Componente de "Glass Card" tarjeta de resumen de servicio
 struct GlassCard<Content: View>: View {
     let content: Content
     var cornerRadius: CGFloat = AppConstants.cornerRadius

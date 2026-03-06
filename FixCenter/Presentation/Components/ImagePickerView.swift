@@ -7,7 +7,7 @@
 
 import SwiftUI
 import UIKit
-
+// TODO: Componente de seleccion de imagenes
 struct ImagePickerView: View {
     @Binding var selectedImages: [UIImage]
     let title: String

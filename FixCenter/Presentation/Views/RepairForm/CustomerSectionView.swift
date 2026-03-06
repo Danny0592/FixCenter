@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista datos del cliente
 struct CustomerSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     
@@ -44,6 +44,7 @@ struct CustomerSectionView: View {
                 }
             }
             .padding()
+            .padding(.bottom, 100)
         }
         .hideKeyboardOnTap()
     }

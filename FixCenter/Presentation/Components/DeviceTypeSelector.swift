@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Componente de "Tipo de dispositivo"
 struct DeviceTypeSelector: View {
     @Binding var selectedType: DeviceType
     

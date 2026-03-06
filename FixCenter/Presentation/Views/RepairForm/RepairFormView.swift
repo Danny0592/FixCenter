@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista para generar un servicio de reparacion
 struct RepairFormView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     @Environment(\.dismiss) var dismiss
@@ -18,36 +18,57 @@ struct RepairFormView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                // Indicador de progreso
+                // Indicador de progreso del formulario de Nueva Reparación
                 progressIndicator
                 
-                // Contenido del formulario
-                TabView(selection: $viewModel.currentStep) {
-                    CustomerSectionView(viewModel: viewModel)
-                        .tag(0)
+                // Contenido del formulario + Botones flotantes
+                ZStack(alignment: .bottom) {
+                    Group {
+                        switch viewModel.currentStep {
+                        case 0:
+                            CustomerSectionView(viewModel: viewModel)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                ))
+                        case 1:
+                            DeviceSectionView(viewModel: viewModel)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                ))
+                        case 2:
+                            ProblemSectionView(viewModel: viewModel)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                ))
+                        case 3:
+                            RepairSectionView(viewModel: viewModel)
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .trailing),
+                                    removal: .move(edge: .leading)
+                                ))
+                        default:
+                            EmptyView()
+                        }
+                    }
+                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.currentStep)
+                    .ignoresSafeArea(edges: .bottom)
                     
-                    DeviceSectionView(viewModel: viewModel)
-                        .tag(1)
-                    
-                    ProblemSectionView(viewModel: viewModel)
-                        .tag(2)
-                    
-                    RepairSectionView(viewModel: viewModel)
-                        .tag(3)
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                
-                // Botones de navegación
-                navigationButtons
-                
-                // Mensaje de error si falla el guardado
-                if let errorMessage = viewModel.errorMessage {
-                    Text(errorMessage)
-                        .font(.caption)
-                        .foregroundColor(.red)
-                        .padding(.bottom, 8)
-                        .padding(.horizontal)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    // Barra de navegación flotante
+                    VStack(spacing: 8) {
+                        navigationButtons
+                        
+                        if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                                .padding(.bottom, 8)
+                                .padding(.horizontal)
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
+                        }
+                    }
                 }
             }
         }
@@ -79,9 +100,23 @@ struct RepairFormView: View {
         }
         .padding()
         .background(
-            Rectangle()
-                .fill(.ultraThinMaterial)
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                
+                Rectangle()
+                    .fill(Color.white.opacity(0.4)) // Tinte blanco para brillo
+                
+                VStack {
+                    Spacer()
+                    Rectangle()
+                        .fill(Color.white.opacity(0.3))
+                        .frame(height: 1) // Línea inferior sutil
+                }
+            }
+                .cornerRadius(10)
         )
+        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
     
     private var stepTitle: String {
@@ -95,45 +130,24 @@ struct RepairFormView: View {
     }
     
     private var navigationButtons: some View {
-        let hasThreeButtons = viewModel.isEditing && 
-                             viewModel.currentStep > 0 && 
+        let hasThreeButtons = viewModel.isEditing &&
+                             viewModel.currentStep > 0 &&
                              viewModel.currentStep < viewModel.totalSteps - 1
         
-        return HStack(spacing: hasThreeButtons ? 8 : 16) {
+        return HStack(spacing: hasThreeButtons ? 12 : 26) {
             if viewModel.currentStep > 0 {
-                Button(action: {
-                    viewModel.previousStep()
-                }) {
-                    if hasThreeButtons {
-                        // Botón compacto cuando hay 3 botones
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.blue)
-                            .frame(width: 44, height: 44)
-                            .background(
-                                Circle()
-                                    .fill(Color.blue.opacity(0.1))
-                            )
-                    } else {
-                        // Botón normal cuando hay menos botones
-                        HStack(spacing: 6) {
-                            Image(systemName: "chevron.left")
-                            Text("Anterior")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(.blue)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.blue.opacity(0.1))
-                        )
-                    }
-                }
+                GradientButton(
+                    title: "Anterior",
+                    action: {
+                        viewModel.previousStep()
+                    },
+                    icon: "chevron.left",
+                    isCompact: hasThreeButtons
+                )
             }
             
-            // Si está en modo edición, mostrar botón de guardar en todos los pasos
             if viewModel.isEditing {
+                // Botón Guardar siempre presente en edición
                 GradientButton(
                     title: "Guardar",
                     action: {
@@ -149,8 +163,8 @@ struct RepairFormView: View {
                     isCompact: hasThreeButtons
                 )
                 
-                // Si no es el último paso, también mostrar "Siguiente"
                 if viewModel.currentStep < viewModel.totalSteps - 1 {
+                    // Botón Siguiente si no es el final
                     GradientButton(
                         title: "Siguiente",
                         action: {
@@ -160,10 +174,10 @@ struct RepairFormView: View {
                         isCompact: hasThreeButtons
                     )
                     .disabled(!viewModel.canProceedToNextStep)
-                    .opacity(viewModel.canProceedToNextStep ? 1 : 0.5)
+                    .opacity(viewModel.canProceedToNextStep ? 1 : 0.6)
                 }
             } else {
-                // Modo creación: comportamiento original
+                // Modo creación: comportamiento original pero con diseño mejorado
                 if viewModel.currentStep < viewModel.totalSteps - 1 {
                     GradientButton(
                         title: "Siguiente",
@@ -173,7 +187,7 @@ struct RepairFormView: View {
                         icon: "chevron.right"
                     )
                     .disabled(!viewModel.canProceedToNextStep)
-                    .opacity(viewModel.canProceedToNextStep ? 1 : 0.5)
+                    .opacity(viewModel.canProceedToNextStep ? 1 : 0.6)
                 } else {
                     GradientButton(
                         title: "Guardar",
@@ -185,20 +199,29 @@ struct RepairFormView: View {
                                 }
                             }
                         },
-                        icon: "checkmark",
+                        icon: "checkmark.circle.fill",
                         isLoading: viewModel.isLoading
                     )
                 }
             }
         }
-        .padding(hasThreeButtons ? .horizontal : [])
-        .padding(.vertical)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(
-            Rectangle()
-                .fill(.ultraThinMaterial)
+            ZStack {
+                Capsule()
+                    .fill(.ultraThinMaterial)
+                Capsule()
+                    .stroke(Color.white.opacity(0.5), lineWidth: 1)
+            }
+            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
         )
+        .padding(.horizontal)
+        .padding(.bottom, 12)
+        .animation(.snappy(duration: 0.3), value: viewModel.currentStep)
     }
 }
+    
 
 #Preview {
     NavigationStack {

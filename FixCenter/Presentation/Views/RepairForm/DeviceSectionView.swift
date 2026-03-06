@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista de informacion del dispositivo
 struct DeviceSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     
@@ -49,6 +49,7 @@ struct DeviceSectionView: View {
                 }
             }
             .padding()
+            .padding(.bottom, 100)
         }
         .hideKeyboardOnTap()
     }

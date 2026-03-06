@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+// TODO: Vista de descripcion del problema
 struct ProblemSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     @FocusState private var isProblemDescriptionFocused: Bool
@@ -53,6 +53,7 @@ struct ProblemSectionView: View {
                 }
             }
             .padding()
+            .padding(.bottom, 100)
         }
         .hideKeyboardOnTap()
     }

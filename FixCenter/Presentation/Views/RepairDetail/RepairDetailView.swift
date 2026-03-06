@@ -16,6 +16,8 @@ struct RepairDetailView: View {
     @State private var isShowingInitial = true
     @State private var showEditView = false
     @State private var showDeleteConfirmation = false
+    @State private var showCamera = false
+    @State private var showPhotoPicker = false
     
     var body: some View {
         ScrollView {
@@ -53,7 +55,7 @@ struct RepairDetailView: View {
             }
             .padding()
         }
-        .background(AppColors.backgroundGradient.ignoresSafeArea())
+        .background(AppColors.backgroundGradient.ignoresSafeArea()) // fondo completo blaco azulado
         .navigationTitle("Detalle de Reparación")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -61,13 +63,8 @@ struct RepairDetailView: View {
                 Button(action: {
                     showEditView = true
                 }) {
-                    Image(systemName: "pencil")
-                }
-                
-                Button(action: {
-                    showStatusPicker = true
-                }) {
-                    Image(systemName: "slider.horizontal.3")
+                    Image(systemName: "pencil.and.list.clipboard")
+                        .foregroundColor(.blue)
                 }
             }
         }
@@ -198,8 +195,11 @@ struct RepairDetailView: View {
     private var customerSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Información del Cliente")
-                    .font(.headline)
+                HStack {
+                    Text("Información del Cliente")
+                        .font(.headline)
+                    Spacer()
+                }
                 
                 InfoRow(icon: "person.fill", title: "Nombre", value: viewModel.repair.customer.fullName)
                 InfoRow(icon: "phone.fill", title: "Teléfono", value: viewModel.repair.customer.phone)
@@ -212,8 +212,11 @@ struct RepairDetailView: View {
     private var deviceSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Información del Dispositivo")
-                    .font(.headline)
+                HStack {
+                    Text("Información del Dispositivo")
+                        .font(.headline)
+                    Spacer()
+                }
                 
                 InfoRow(icon: "tag.fill", title: "Tipo", value: viewModel.repair.device.type.rawValue)
                 InfoRow(icon: "building.fill", title: "Marca", value: viewModel.repair.device.brand)
@@ -299,8 +302,11 @@ struct RepairDetailView: View {
     private var problemSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Descripción del Problema")
-                    .font(.headline)
+                HStack {
+                    Text("Descripción del Problema")
+                        .font(.headline)
+                    Spacer()
+                }
                 
                 Text(viewModel.repair.problemDescription)
                     .font(.body)
@@ -332,8 +338,11 @@ struct RepairDetailView: View {
     private var workSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Trabajo Realizado")
-                    .font(.headline)
+                HStack {
+                    Text("Trabajo Realizado")
+                        .font(.headline)
+                    Spacer()
+                }
                 
                 if !viewModel.repair.assignedTechnician.isEmpty {
                     InfoRow(
@@ -379,14 +388,20 @@ struct RepairDetailView: View {
             let images = isShowingInitial ? viewModel.initialImageUIs : viewModel.finalImageUIs
             
             if images.isEmpty {
-                Text("No hay imágenes para este tipo")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding()
+                VStack(spacing: 12) {
+                    Text("No hay imágenes para este tipo")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    addPhotosMenu
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
+                        addPhotosMenu
+                        
                         ForEach(Array(images.enumerated()), id: \.offset) { index, image in
                             Button(action: {
                                 selectedImageIndex = index
@@ -395,7 +410,7 @@ struct RepairDetailView: View {
                                 Image(uiImage: image)
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: 150, height: 150)
+                                    .frame(width: 110, height: 110)
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
                         }
@@ -407,6 +422,56 @@ struct RepairDetailView: View {
             ImageFullscreenView(
                 images: isShowingInitial ? viewModel.initialImageUIs : viewModel.finalImageUIs,
                 currentIndex: selectedImageIndex
+            )
+        }
+        .sheet(isPresented: $showCamera) {
+            CameraView(selectedImage: { image in
+                if isShowingInitial {
+                    viewModel.initialImageUIs.append(image)
+                } else {
+                    viewModel.finalImageUIs.append(image)
+                }
+                Task {
+                    await viewModel.saveChanges()
+                }
+            })
+        }
+        .sheet(isPresented: $showPhotoPicker) {
+            PhotoPickerView(selectedImages: isShowingInitial ? $viewModel.initialImageUIs : $viewModel.finalImageUIs, maxSelection: 10)
+                .onDisappear {
+                    Task {
+                        await viewModel.saveChanges()
+                    }
+                }
+        }
+    }
+    
+    private var addPhotosMenu: some View {
+        Menu {
+            Button(action: {
+                showCamera = true
+            }) {
+                Label("Cámara", systemImage: "camera.fill")
+            }
+            
+            Button(action: {
+                showPhotoPicker = true
+            }) {
+                Label("Galería", systemImage: "photo.on.rectangle")
+            }
+        } label: {
+            VStack(spacing: 8) {
+                Image(systemName: "plus.circle.fill")
+                    .font(.title2)
+                Text("Agregar")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+            }
+            .foregroundColor(.blue)
+            .frame(width: 110, height: 110)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.blue.opacity(0.1))
             )
         }
     }
