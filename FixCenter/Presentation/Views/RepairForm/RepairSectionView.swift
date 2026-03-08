@@ -6,188 +6,167 @@
 //
 
 import SwiftUI
-// TODO: Vista de detalle de reparacion
+/// Vista de detalle de reparacion
 struct RepairSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
-    @FocusState private var isTechnicianFocused: Bool
-    @FocusState private var isWorkPerformedFocused: Bool
-    @FocusState private var isNotesFocused: Bool
-    @FocusState private var isPriceFocused: Bool
+    @FocusState private var focusedField: RepairFormField?
     @State private var priceText: String = ""
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                GlassCard {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Label("Técnico asignado", systemImage: "person.badge.key.fill")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        
-                        HStack {
-                            TextField("Nombre del técnico", text: $viewModel.repair.assignedTechnician)
-                                .focused($isTechnicianFocused)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 24) {
+                    Color.clear
+                        .frame(height: 1)
+                        .id("top")
+                    
+                    GlassCard {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Label("Técnico asignado", systemImage: "person.badge.key.fill")
+                                .font(.headline)
+                                .foregroundColor(.primary)
                             
-                            if !viewModel.repair.assignedTechnician.isEmpty && isTechnicianFocused {
-                                Button(action: {
-                                    viewModel.repair.assignedTechnician = ""
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.gray)
+                            HStack {
+                                TextField("Nombre del técnico", text: $viewModel.repair.assignedTechnician)
+                                    .focused($focusedField, equals: .technician)
+                                    .id(RepairFormField.technician)
+                                
+                                if !viewModel.repair.assignedTechnician.isEmpty && focusedField == .technician {
+                                    Button(action: {
+                                        viewModel.repair.assignedTechnician = ""
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                             }
-                        }
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.white.opacity(0.8))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                        )
-                        .toolbar {
-                            ToolbarItemGroup(placement: .keyboard) {
-                                Spacer()
-                                Button("Listo") {
-                                    isTechnicianFocused = false
-                                }
-                                .foregroundColor(.blue)
-                            }
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.white.opacity(0.8))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
                         }
                     }
-                }
-                
-                GlassCard {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Precio de la reparación")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        
-                        HStack {
-                            Text("$")
-                                .font(.title2)
-                                .foregroundColor(.secondary)
-                            TextField("0.00", text: $priceText)
-                                .keyboardType(.decimalPad)
-                                .font(.title2)
-                                .focused($isPriceFocused)
-                                .onChange(of: priceText) { newValue in
-                                    if let price = Double(newValue) {
-                                        viewModel.repair.price = price
-                                    } else if newValue.isEmpty {
+                    
+                    GlassCard {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Precio de la reparación")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            
+                            HStack {
+                                Text("$")
+                                    .font(.title2)
+                                    .foregroundColor(.secondary)
+                                TextField("0.00", text: $priceText)
+                                    .keyboardType(.decimalPad)
+                                    .font(.title2)
+                                    .focused($focusedField, equals: .price)
+                                    .id(RepairFormField.price)
+                                    .onChange(of: priceText) { newValue in
+                                        if let price = Double(newValue) {
+                                            viewModel.repair.price = price
+                                        } else if newValue.isEmpty {
+                                            viewModel.repair.price = nil
+                                        }
+                                    }
+                                    .onAppear {
+                                        if let price = viewModel.repair.price {
+                                            priceText = String(format: "%.2f", price)
+                                        }
+                                    }
+                                
+                                if !priceText.isEmpty && focusedField == .price {
+                                    Button(action: {
+                                        priceText = ""
                                         viewModel.repair.price = nil
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.gray)
                                     }
                                 }
-                                .onAppear {
-                                    if let price = viewModel.repair.price {
-                                        priceText = String(format: "%.2f", price)
-                                    }
-                                }
+                            }
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.white.opacity(0.8))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+                        }
+                    }
+                    
+                    GlassCard {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Trabajo realizado")
+                                .font(.headline)
+                                .foregroundColor(.primary)
                             
-                            if !priceText.isEmpty && isPriceFocused {
-                                Button(action: {
-                                    priceText = ""
-                                    viewModel.repair.price = nil
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.white.opacity(0.8))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                        )
-                        .toolbar {
-                            ToolbarItemGroup(placement: .keyboard) {
-                                Spacer()
-                                Button("Listo") {
-                                    isPriceFocused = false
-                                }
-                                .foregroundColor(.blue)
-                            }
+                            TextEditor(text: $viewModel.repair.workPerformed)
+                                .frame(minHeight: 150)
+                                .padding(8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.white.opacity(0.8))
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                )
+                                .focused($focusedField, equals: .workPerformed)
+                                .id(RepairFormField.workPerformed)
                         }
                     }
-                }
-                
-                GlassCard {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Trabajo realizado")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        
-                        TextEditor(text: $viewModel.repair.workPerformed)
-                            .frame(minHeight: 150)
-                            .padding(8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white.opacity(0.8))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                            )
-                            .focused($isWorkPerformedFocused)
-                            .toolbar {
-                                ToolbarItemGroup(placement: .keyboard) {
-                                    Spacer()
-                                    Button("Listo") {
-                                        isWorkPerformedFocused = false
-                                    }
-                                    .foregroundColor(.blue)
-                                }
-                            }
+                    
+                    GlassCard {
+                        ImagePickerView(
+                            selectedImages: $viewModel.finalImages,
+                            title: "Fotos del dispositivo reparado",
+                            maxImages: 10
+                        )
                     }
+                    
+                    GlassCard {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Notas adicionales")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            
+                            TextEditor(text: $viewModel.repair.notes)
+                                .frame(minHeight: 100)
+                                .padding(8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.white.opacity(0.8))
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                )
+                                .focused($focusedField, equals: .notes)
+                                .id(RepairFormField.notes)
+                        }
+                    }
+                    
+                    Spacer(minLength: 20)
                 }
-                
-                GlassCard {
-                    ImagePickerView(
-                        selectedImages: $viewModel.finalImages,
-                        title: "Fotos del dispositivo reparado",
-                        maxImages: 10
-                    )
-                }
-                
-                GlassCard {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Notas adicionales")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        
-                        TextEditor(text: $viewModel.repair.notes)
-                            .frame(minHeight: 100)
-                            .padding(8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white.opacity(0.8))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                            )
-                            .focused($isNotesFocused)
-                            .toolbar {
-                                ToolbarItemGroup(placement: .keyboard) {
-                                    Spacer()
-                                    Button("Listo") {
-                                        isNotesFocused = false
-                                    }
-                                    .foregroundColor(.blue)
-                                }
-                            }
+                .padding()
+            }
+            .hideKeyboardOnTap()
+            .onChange(of: focusedField) { newValue in
+                if let field = newValue {
+                    withAnimation(.spring()) {
+                        proxy.scrollTo(field, anchor: UnitPoint(x: 0.5, y: 0.8))
                     }
                 }
             }
-            .padding()
-            .padding(.bottom, 120) // Un poco más de espacio aquí por ser la última sección
         }
-        .hideKeyboardOnTap()
     }
 }
 

@@ -13,9 +13,18 @@ struct FloatingTextField: View {
     var placeholder: String = ""
     var keyboardType: UIKeyboardType = .default
     var isSecure: Bool = false
+    var focusState: FocusState<RepairFormField?>.Binding? = nil
+    var focusValue: RepairFormField? = nil
     
-    @FocusState private var isFocused: Bool
+    @FocusState private var internalIsFocused: Bool
     @State private var borderColor: Color = .gray.opacity(0.3)
+    
+    private var isCurrentlyFocused: Bool {
+        if let focusState = focusState, let focusValue = focusValue {
+            return focusState.wrappedValue == focusValue
+        }
+        return internalIsFocused
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -25,7 +34,7 @@ struct FloatingTextField: View {
             
             HStack {
                 ZStack(alignment: .leading) {
-                    if text.isEmpty && !isFocused {
+                    if text.isEmpty && !isCurrentlyFocused {
                         Text(placeholder.isEmpty ? title : placeholder)
                             .foregroundColor(.gray.opacity(0.6))
                     }
@@ -37,13 +46,16 @@ struct FloatingTextField: View {
                             TextField("", text: $text)
                         }
                     }
-                    .focused($isFocused)
+                    .ifLet(focusState, focusValue) { view, state, value in
+                        view.focused(state, equals: value)
+                    }
+                    .focused($internalIsFocused)
                     .keyboardType(keyboardType)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                 }
                 
-                if !text.isEmpty && isFocused {
+                if !text.isEmpty && isCurrentlyFocused {
                     Button(action: {
                         text = ""
                     }) {
@@ -63,20 +75,22 @@ struct FloatingTextField: View {
                             .stroke(borderColor, lineWidth: 2)
                     )
             )
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Listo") {
-                        isFocused = false
-                    }
-                    .foregroundColor(.blue)
-                }
-            }
         }
-        .onChange(of: isFocused) { focused in
+        .onChange(of: isCurrentlyFocused) { focused in
             withAnimation(.easeInOut(duration: 0.2)) {
                 borderColor = focused ? .blue : .gray.opacity(0.3)
             }
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func ifLet<T, V, Content: View>(_ optional1: T?, _ optional2: V?, transform: (Self, T, V) -> Content) -> some View {
+        if let optional1 = optional1, let optional2 = optional2 {
+            transform(self, optional1, optional2)
+        } else {
+            self
         }
     }
 }

@@ -6,56 +6,62 @@
 //
 
 import SwiftUI
-// TODO: Vista de descripcion del problema
+/// Vista de descripcion del problema
 struct ProblemSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
-    @FocusState private var isProblemDescriptionFocused: Bool
+    @FocusState private var focusedField: RepairFormField?
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                GlassCard {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Descripción del problema")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        
-                        TextEditor(text: $viewModel.repair.problemDescription)
-                            .frame(minHeight: 150)
-                            .padding(8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.white.opacity(0.8))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-                            )
-                            .focused($isProblemDescriptionFocused)
-                            .toolbar {
-                                ToolbarItemGroup(placement: .keyboard) {
-                                    Spacer()
-                                    Button("Listo") {
-                                        isProblemDescriptionFocused = false
-                                    }
-                                    .foregroundColor(.blue)
-                                }
-                            }
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 24) {
+                    Color.clear
+                        .frame(height: 1)
+                        .id("top")
+                    
+                    GlassCard {
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Descripción del problema")
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            
+                            TextEditor(text: $viewModel.repair.problemDescription)
+                                .frame(minHeight: 150)
+                                .padding(8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.white.opacity(0.8))
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                )
+                                .focused($focusedField, equals: .problemDescription)
+                                .id(RepairFormField.problemDescription)
+                        }
+                    }
+                    
+                    GlassCard {
+                        ImagePickerView(
+                            selectedImages: $viewModel.initialImages,
+                            title: "Fotos del daño inicial",
+                            maxImages: 10
+                        )
+                    }
+                    
+                    Spacer(minLength: 20)
+                }
+                .padding()
+            }
+            .hideKeyboardOnTap()
+            .onChange(of: focusedField) { newValue in
+                if let field = newValue {
+                    withAnimation(.spring()) {
+                        proxy.scrollTo(field, anchor: UnitPoint(x: 0.5, y: 0.8))
                     }
                 }
-                
-                GlassCard {
-                    ImagePickerView(
-                        selectedImages: $viewModel.initialImages,
-                        title: "Fotos del daño inicial",
-                        maxImages: 10
-                    )
-                }
             }
-            .padding()
-            .padding(.bottom, 100)
         }
-        .hideKeyboardOnTap()
     }
 }
 

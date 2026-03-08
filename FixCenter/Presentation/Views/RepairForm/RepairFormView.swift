@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-// TODO: Vista para generar un servicio de reparacion
+/// Vista para generar un servicio de reparacion
 struct RepairFormView: View {
     @ObservedObject var viewModel: RepairFormViewModel
     @Environment(\.dismiss) var dismiss
@@ -21,55 +21,54 @@ struct RepairFormView: View {
                 // Indicador de progreso del formulario de Nueva Reparación
                 progressIndicator
                 
-                // Contenido del formulario + Botones flotantes
-                ZStack(alignment: .bottom) {
-                    Group {
-                        switch viewModel.currentStep {
-                        case 0:
-                            CustomerSectionView(viewModel: viewModel)
-                                .transition(.asymmetric(
-                                    insertion: .move(edge: .trailing),
-                                    removal: .move(edge: .leading)
-                                ))
-                        case 1:
-                            DeviceSectionView(viewModel: viewModel)
-                                .transition(.asymmetric(
-                                    insertion: .move(edge: .trailing),
-                                    removal: .move(edge: .leading)
-                                ))
-                        case 2:
-                            ProblemSectionView(viewModel: viewModel)
-                                .transition(.asymmetric(
-                                    insertion: .move(edge: .trailing),
-                                    removal: .move(edge: .leading)
-                                ))
-                        case 3:
-                            RepairSectionView(viewModel: viewModel)
-                                .transition(.asymmetric(
-                                    insertion: .move(edge: .trailing),
-                                    removal: .move(edge: .leading)
-                                ))
-                        default:
-                            EmptyView()
-                        }
-                    }
-                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.currentStep)
-                    .ignoresSafeArea(edges: .bottom)
-                    
-                    // Barra de navegación flotante
-                    VStack(spacing: 8) {
-                        navigationButtons
-                        
-                        if let errorMessage = viewModel.errorMessage {
-                            Text(errorMessage)
-                                .font(.caption)
-                                .foregroundColor(.red)
-                                .padding(.bottom, 8)
-                                .padding(.horizontal)
-                                .transition(.move(edge: .bottom).combined(with: .opacity))
-                        }
+                // Contenido del formulario
+                Group {
+                    switch viewModel.currentStep {
+                    case 0:
+                        CustomerSectionView(viewModel: viewModel)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .trailing),
+                                removal: .move(edge: .leading)
+                            ))
+                    case 1:
+                        DeviceSectionView(viewModel: viewModel)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .trailing),
+                                removal: .move(edge: .leading)
+                            ))
+                    case 2:
+                        ProblemSectionView(viewModel: viewModel)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .trailing),
+                                removal: .move(edge: .leading)
+                            ))
+                    case 3:
+                        RepairSectionView(viewModel: viewModel)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .trailing),
+                                removal: .move(edge: .leading)
+                            ))
+                    default:
+                        EmptyView()
                     }
                 }
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: viewModel.currentStep)
+            }
+            .safeAreaInset(edge: .bottom) {
+                // Barra de navegación flotante
+                VStack(spacing: 8) {
+                    navigationButtons
+                    
+                    if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.bottom, 8)
+                            .padding(.horizontal)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
+                }
+                .padding(.bottom, 12) // Espacio ajustado para quedar pegado al teclado
             }
         }
         .navigationTitle(viewModel.isEditing ? "Editar Reparación" : "Nueva Reparación")

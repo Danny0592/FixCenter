@@ -6,47 +6,74 @@
 //
 
 import SwiftUI
-// TODO: Vista datos del cliente
+/// Vista datos del cliente
 struct CustomerSectionView: View {
     @ObservedObject var viewModel: RepairFormViewModel
+    @FocusState private var focusedField: RepairFormField?
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                GlassCard {
-                    VStack(spacing: 20) {
-                        FloatingTextField(
-                            title: "Nombre completo",
-                            text: $viewModel.repair.customer.fullName,
-                            placeholder: "Ej: Juan Pérez"
-                        )
-                        
-                        FloatingTextField(
-                            title: "Teléfono",
-                            text: $viewModel.repair.customer.phone,
-                            placeholder: "Ej: +52 123 456 7890",
-                            keyboardType: .phonePad
-                        )
-                        
-                        FloatingTextField(
-                            title: "Dirección",
-                            text: $viewModel.repair.customer.address,
-                            placeholder: "Ej: Calle Principal 123"
-                        )
-                        
-                        FloatingTextField(
-                            title: "Correo electrónico",
-                            text: $viewModel.repair.customer.email,
-                            placeholder: "Ej: juan@example.com",
-                            keyboardType: .emailAddress
-                        )
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 24) {
+                    Color.clear
+                        .frame(height: 1)
+                        .id("top")
+                    
+                    GlassCard {
+                        VStack(spacing: 20) {
+                            FloatingTextField(
+                                title: "Nombre completo",
+                                text: $viewModel.repair.customer.fullName,
+                                placeholder: "Ej: Juan Pérez",
+                                focusState: $focusedField,
+                                focusValue: .customerName
+                            )
+                            .id(RepairFormField.customerName)
+                            
+                            FloatingTextField(
+                                title: "Teléfono",
+                                text: $viewModel.repair.customer.phone,
+                                placeholder: "Ej: +52 123 456 7890",
+                                keyboardType: .phonePad,
+                                focusState: $focusedField,
+                                focusValue: .customerPhone
+                            )
+                            .id(RepairFormField.customerPhone)
+                            
+                            FloatingTextField(
+                                title: "Dirección",
+                                text: $viewModel.repair.customer.address,
+                                placeholder: "Ej: Calle Principal 123",
+                                focusState: $focusedField,
+                                focusValue: .customerAddress
+                            )
+                            .id(RepairFormField.customerAddress)
+                            
+                            FloatingTextField(
+                                title: "Correo electrónico",
+                                text: $viewModel.repair.customer.email,
+                                placeholder: "Ej: juan@example.com",
+                                keyboardType: .emailAddress,
+                                focusState: $focusedField,
+                                focusValue: .customerEmail
+                            )
+                            .id(RepairFormField.customerEmail)
+                        }
+                    }
+                    
+                    Spacer(minLength: 20)
+                }
+                .padding()
+            }
+            .hideKeyboardOnTap()
+            .onChange(of: focusedField) { newValue in
+                if let field = newValue {
+                    withAnimation(.spring()) {
+                        proxy.scrollTo(field, anchor: UnitPoint(x: 0.5, y: 0.8))
                     }
                 }
             }
-            .padding()
-            .padding(.bottom, 100)
         }
-        .hideKeyboardOnTap()
     }
 }
 
