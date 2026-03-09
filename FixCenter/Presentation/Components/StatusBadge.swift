@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
-// TODO: Componente de StatusBadge
+/// Componente de StatusBadge (circulos)
 struct StatusBadge: View {
     let status: RepairStatus
     let size: CGFloat
     
     @State private var isPulsing = false
     
-    init(status: RepairStatus, size: CGFloat = 18) {
+    init(status: RepairStatus, size: CGFloat = 20) {
         self.status = status
         self.size = size
     }

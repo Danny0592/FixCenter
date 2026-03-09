@@ -17,8 +17,10 @@ struct RepairCard: View {
                 VStack(alignment: .leading, spacing: 12) {
                     // Header con estado y folio
                     HStack {
+//                        Satatus (Circulo)
                         StatusBadge(status: repair.status, size: 20)
                         
+//                        Folio de la reparacion
                         if let folio = repair.folio, !folio.isEmpty {
                             Text(folio)
                                 .font(.caption)
@@ -28,12 +30,13 @@ struct RepairCard: View {
                                 .padding(.vertical, 4)
                                 .background(
                                     RoundedRectangle(cornerRadius: 6)
-                                        .fill(Color.secondary.opacity(0.15))
+                                        .fill(repair.status.color.opacity(0.15))
                                 )
+                                .padding(.leading, 6)
                         }
                         
                         Spacer()
-                        
+//                        Status en texto
                         Text(repair.status.rawValue)
                             .font(.caption)
                             .fontWeight(.semibold)
@@ -52,17 +55,18 @@ struct RepairCard: View {
                             Circle()
                                 .fill(repair.device.type.color.opacity(0.2))
                                 .frame(width: 50, height: 50)
-                            
+//                            Tipo de dispositivo
                             Image(systemName: repair.device.type.icon)
                                 .font(.title2)
                                 .foregroundColor(repair.device.type.color)
                         }
-                        
+//                        Marca y modelo del dispositivo
                         VStack(alignment: .leading, spacing: 4) {
                             Text(repair.device.displayName)
                                 .font(.headline)
                                 .foregroundColor(.primary)
                             
+//                            Nombre del cliente
                             Text(repair.customer.fullName)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
@@ -71,7 +75,7 @@ struct RepairCard: View {
                         Spacer()
                     }
                     
-                    // Descripción del problema (truncada)
+                    // Descripción del problema
                     if !repair.problemDescription.isEmpty {
                         Text(repair.problemDescription)
                             .font(.caption)
@@ -79,7 +83,7 @@ struct RepairCard: View {
                             .lineLimit(2)
                     }
                     
-                    // Footer con fechas
+                    // Fecha de registro
                     HStack {
                         Label(
                             repair.receivedDate.formatted(date: .abbreviated, time: .omitted),
@@ -118,6 +122,7 @@ struct RepairCardButtonStyle: ButtonStyle {
 #Preview {
     RepairCard(
         repair: Repair(
+            folio: "FX-001",
             customer: Customer(fullName: "Juan Pérez", phone: "1234567890"),
             device: Device(type: .phone, brand: "Apple", model: "iPhone 14"),
             problemDescription: "Pantalla rota, necesita reemplazo",
