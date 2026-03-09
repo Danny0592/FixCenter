@@ -45,13 +45,13 @@ struct RepairDetailView: View {
                 // Trabajo realizado
                 workSection
                 
-                // Botón de eliminar
-                deleteButton
-                
                 // Galería de imágenes
                 if !viewModel.initialImageUIs.isEmpty || !viewModel.finalImageUIs.isEmpty {
                     imageGallerySection
                 }
+                
+                // Botón de eliminar
+                deleteButton
             }
             .padding()
         }
@@ -122,7 +122,7 @@ struct RepairDetailView: View {
             .font(.headline)
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .padding()
+            .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.red)
