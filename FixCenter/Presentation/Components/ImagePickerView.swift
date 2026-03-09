@@ -87,11 +87,12 @@ struct ImagePickerView: View {
                                 selectedImages.remove(at: index)
                             }) {
                                 Image(systemName: "xmark.circle.fill")
+                                    .font(.system(size: 20))
                                     .foregroundColor(.white)
                                     .background(Color.red)
                                     .clipShape(Circle())
                             }
-                            .offset(x: 8, y: -8)
+                            .offset(x: -4, y: 4)
                         }
                     }
                 }
