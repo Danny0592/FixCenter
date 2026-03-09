@@ -42,17 +42,17 @@ struct GradientButton: View {
                         .scaleEffect(isCompact ? 0.8 : 1.0)
                 } else if let icon = icon {
                     Image(systemName: icon)
-                        .font(.system(size: isCompact ? 14 : 16))
+                        .font(.system(size: 14))
                 }
                 
                 Text(title)
                     .fontWeight(.semibold)
-                    .font(.system(size: isCompact ? 14 : 16))
+                    .font(.system(size: 14))
             }
             .foregroundColor(.white)
             .frame(maxWidth: isCompact ? nil : .infinity)
             .padding(.horizontal, isCompact ? 12 : 16)
-            .padding(.vertical, isCompact ? 10 : 14)
+            .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(gradient)

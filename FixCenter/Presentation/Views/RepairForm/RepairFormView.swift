@@ -68,7 +68,7 @@ struct RepairFormView: View {
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                 }
-                .padding(.bottom, 12) // Espacio ajustado para quedar pegado al teclado
+                .padding(.bottom, 4) // Pegado casi al límite o teclado
             }
         }
         .navigationTitle(viewModel.isEditing ? "Editar Reparación" : "Nueva Reparación")
@@ -205,7 +205,7 @@ struct RepairFormView: View {
             }
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.vertical, 6)
         .background(
             ZStack {
                 Capsule()
@@ -216,7 +216,7 @@ struct RepairFormView: View {
             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
         )
         .padding(.horizontal)
-        .padding(.bottom, 12)
+        .padding(.bottom, 0)
         .animation(.snappy(duration: 0.3), value: viewModel.currentStep)
     }
 }
