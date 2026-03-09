@@ -41,8 +41,8 @@ struct RepairCard: View {
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .background(
-                                Capsule()
-                                    .fill(repair.status.color.opacity(0.2))
+                                RoundedRectangle(cornerRadius: 8)
+                                    .fill(repair.status.color.opacity(0.15))
                             )
                     }
                     
@@ -98,6 +98,10 @@ struct RepairCard: View {
                     }
                 }
             }
+            .background(
+                RoundedRectangle(cornerRadius: AppConstants.cornerRadius)
+                    .fill(repair.status.color.opacity(0.3))
+            )
         }
         .buttonStyle(RepairCardButtonStyle())
     }
