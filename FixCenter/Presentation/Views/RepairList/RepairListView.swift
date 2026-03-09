@@ -170,17 +170,42 @@ struct RepairListView: View {
     }
     
     private var emptyStateView: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "wrench.and.screwdriver")
+        let title: String
+        let message: String
+        let icon: String
+        
+        if let status = viewModel.selectedStatus {
+            icon = status.icon
+            let statusText: String
+            switch status {
+            case .diagnosing, .repairing:
+                statusText = status.rawValue.lowercased()
+            default:
+                statusText = "\(status.rawValue.lowercased())s"
+            }
+            title = "No hay servicios \(statusText)"
+            message = "Actualmente no tienes ninguna reparación en este estado"
+        } else if !viewModel.searchText.isEmpty {
+            icon = "magnifyingglass"
+            title = "Sin resultados"
+            message = "No encontramos reparaciones que coincidan con \"\(viewModel.searchText)\""
+        } else {
+            icon = "wrench.and.screwdriver"
+            title = "No hay reparaciones"
+            message = "Toca el botón + para agregar una nueva reparación"
+        }
+        
+        return VStack(spacing: 20) {
+            Image(systemName: icon)
                 .font(.system(size: 50))
                 .foregroundColor(.gray.opacity(0.5))
             
-            Text("No hay reparaciones")
+            Text(title)
                 .font(.title2)
                 .fontWeight(.semibold)
                 .foregroundColor(.secondary)
             
-            Text("Toca el botón + para agregar una nueva reparación")
+            Text(message)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
