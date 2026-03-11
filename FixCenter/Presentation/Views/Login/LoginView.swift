@@ -64,7 +64,7 @@ struct LoginView: View {
                                         .stroke(Color.white.opacity(0.4), lineWidth: 1)
                                 )
                             
-                            Image("iconol")
+                            Image("icono")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)

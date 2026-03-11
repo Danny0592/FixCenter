@@ -13,6 +13,7 @@ struct FloatingTextField: View {
     var placeholder: String = ""
     var keyboardType: UIKeyboardType = .default
     var isSecure: Bool = false
+    var icon: String? = nil
     var focusState: FocusState<RepairFormField?>.Binding? = nil
     var focusValue: RepairFormField? = nil
     
@@ -32,7 +33,14 @@ struct FloatingTextField: View {
                 .font(.caption)
                 .foregroundColor(.blue)
             
-            HStack {
+            HStack(spacing: 12) {
+                if let iconName = icon {
+                    Image(systemName: iconName)
+                        .foregroundColor(.blue.opacity(0.8))
+                        .font(.system(size: 18))
+                        .frame(width: 20)
+                }
+                
                 ZStack(alignment: .leading) {
                     if text.isEmpty && !isCurrentlyFocused {
                         Text(placeholder.isEmpty ? title : placeholder)
