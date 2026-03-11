@@ -7,12 +7,18 @@
 
 import SwiftUI
 
+/// Vista principal que muestra la lista de reparaciones con funciones de búsqueda y filtrado.
 struct RepairListView: View {
+    /// ViewModel que gestiona los datos y lógica de la lista.
     @StateObject private var viewModel: RepairListViewModel
+    /// Controla la presentación del formulario para crear una nueva reparación.
     @State private var showNewRepair = false
+    /// Referencia a la reparación seleccionada para mostrar su detalle.
     @State private var selectedRepair: Repair? = nil
+    /// Estado de foco para el campo de búsqueda.
     @FocusState private var isSearchFocused: Bool
     
+    /// Inicializa la vista con su ViewModel.
     init(viewModel: RepairListViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -112,7 +118,8 @@ struct RepairListView: View {
             }
         }
     }
-    
+/// Filtrar reparacion
+    /// Sección superior que contiene la barra de búsqueda interactiva.
     private var searchSection: some View {
         HStack {
             Image(systemName: "magnifyingglass")
@@ -144,7 +151,8 @@ struct RepairListView: View {
                 .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
         )
     }
-    
+    /// Seccion de Status
+    /// Barra horizontal de filtros por estado de reparación.
     private var filterSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
@@ -168,7 +176,8 @@ struct RepairListView: View {
             .padding(.horizontal, 4)
         }
     }
-    
+    /// Vista cuando no hay reparaciones en cualquier seccion
+    /// Si no hay reparaciones en la seccion muestra un texto personalizado, dependiendo el status
     private var emptyStateView: some View {
         let title: String
         let message: String
@@ -214,10 +223,15 @@ struct RepairListView: View {
     }
 }
 
+/// Un chip interactivo utilizado en la barra de filtros.
 struct FilterChip: View {
+    /// Texto a mostrar en el chip.
     let title: String
+    /// Indica si el chip está seleccionado.
     let isSelected: Bool
+    /// Color predominante del chip.
     var color: Color = .blue
+    /// Acción al pulsar el chip.
     let action: () -> Void
     
     var body: some View {

@@ -6,17 +6,27 @@
 //
 
 import SwiftUI
-
+/// Vista de detalle de reparacion
+/// Vista detallada de una reparación que permite consultar toda la información y actualizar su estado.
 struct RepairDetailView: View {
+    /// ViewModel que gestiona los datos de la reparación y sus imágenes.
     @ObservedObject var viewModel: RepairDetailViewModel
     @Environment(\.dismiss) var dismiss
+    /// Controla la visibilidad del selector de estado.
     @State private var showStatusPicker = false
+    /// Indica si se está mostrando una imagen en pantalla completa.
     @State private var showImageFullscreen = false
+    /// Índice de la imagen seleccionada para ver en pantalla completa.
     @State private var selectedImageIndex = 0
+    /// Determina si se muestran las fotos iniciales (true) o las finales (false).
     @State private var isShowingInitial = true
+    /// Controla la visibilidad del formulario de edición.
     @State private var showEditView = false
+    /// Controla la alerta de confirmación de eliminación.
     @State private var showDeleteConfirmation = false
+    /// Controla la apertura de la cámara.
     @State private var showCamera = false
+    /// Controla la apertura de la galería de fotos.
     @State private var showPhotoPicker = false
     
     var body: some View {
@@ -110,7 +120,7 @@ struct RepairDetailView: View {
             Text("¿Estás seguro de que deseas eliminar esta reparación? Esta acción no se puede deshacer.")
         }
     }
-    
+    /// Boton para eliminar el detalle de reparacion
     private var deleteButton: some View {
         Button(action: {
             showDeleteConfirmation = true
@@ -130,7 +140,7 @@ struct RepairDetailView: View {
         }
         .padding(.horizontal)
     }
-    
+    /// MUESTRA LA MARCA, MODELO DEL DISPOSITIVO, NOMBRE DEL CLIENTE Y EL STATUS
     private var headerSection: some View {
         GlassCard {
             VStack(spacing: 16) {
@@ -191,7 +201,7 @@ struct RepairDetailView: View {
             }
         }
     }
-    
+    /// Tarjeta de informacion del cliente que muestra el nombre, telefono, email y direccion
     private var customerSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
@@ -208,7 +218,7 @@ struct RepairDetailView: View {
             }
         }
     }
-    
+    /// Tarjet que muestra la informacion del dispositivo, tipo, marca, modelo y contraseña
     private var deviceSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
@@ -228,7 +238,7 @@ struct RepairDetailView: View {
             }
         }
     }
-    
+    /// Tarjeta que muestra Estado y Fechas
     private var statusSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 16) {
@@ -298,7 +308,7 @@ struct RepairDetailView: View {
             }
         }
     }
-    
+    /// Tarjeta que muestra la Descripción del Problema
     private var problemSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
@@ -314,7 +324,7 @@ struct RepairDetailView: View {
             }
         }
     }
-    
+    /// Tarjeta que muestra  el Precio
     private var priceSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
@@ -334,7 +344,7 @@ struct RepairDetailView: View {
             }
         }
     }
-    
+    /// Tarjeta que muestra el Trabajo Realizado
     private var workSection: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
@@ -376,7 +386,7 @@ struct RepairDetailView: View {
             }
         }
     }
-    
+    /// Tarjeta que muestra las imagenes de Daño inicial y Después de reparación
     private var imageGallerySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Picker("Tipo de imágenes", selection: $isShowingInitial) {
@@ -445,7 +455,7 @@ struct RepairDetailView: View {
                 }
         }
     }
-    
+    /// Boton que permite tomar una fotogrfia desde la camara
     private var addPhotosMenu: some View {
         Menu {
             Button(action: {
@@ -477,9 +487,13 @@ struct RepairDetailView: View {
     }
 }
 
+/// Una fila que muestra una etiqueta con icono y su valor correspondiente.
 struct InfoRow: View {
+    /// Nombre del icono de SF Symbols.
     let icon: String
+    /// Título descriptivo del dato.
     let title: String
+    /// Valor del dato a mostrar.
     let value: String
     
     var body: some View {
@@ -501,8 +515,11 @@ struct InfoRow: View {
     }
 }
 
+/// Vista para seleccionar un nuevo estado para la reparación.
 struct StatusPickerView: View {
+    /// El estado actual de la reparación.
     let currentStatus: RepairStatus
+    /// Callback que se ejecuta cuando se selecciona un nuevo estado.
     let onSelect: (RepairStatus) -> Void
     @Environment(\.dismiss) var dismiss
     
@@ -562,10 +579,14 @@ struct StatusPickerView: View {
     }
 }
 
+/// Vista que muestra una galería de imágenes en pantalla completa con soporte para navegación por pestañas.
 struct ImageFullscreenView: View {
+    /// Array de imágenes a mostrar.
     let images: [UIImage]
+    /// Índice inicial.
     let currentIndex: Int
     @Environment(\.dismiss) var dismiss
+    /// Índice de la imagen que se muestra actualmente.
     @State private var currentImageIndex: Int
     
     init(images: [UIImage], currentIndex: Int) {
