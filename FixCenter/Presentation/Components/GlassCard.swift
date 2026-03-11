@@ -7,13 +7,23 @@
 
 import SwiftUI
 // TODO: Componente de "Glass Card" tarjeta de resumen de servicio
+/// Un contenedor con efecto de cristal (glassmorphism) y desenfoque de fondo.
 struct GlassCard<Content: View>: View {
+    /// El contenido que se mostrará dentro de la tarjeta.
     let content: Content
+    /// Radio de curvatura de las esquinas.
     var cornerRadius: CGFloat = AppConstants.cornerRadius
+    /// Espaciado interno de la tarjeta.
     var padding: CGFloat = AppConstants.cardPadding
     
+    /// Estado interno para gestionar animaciones de pulsación (si se requiere).
     @State private var isPressed = false
     
+    /// Inicializa una nueva tarjeta de cristal.
+    /// - Parameters:
+    ///   - cornerRadius: Radio de las esquinas.
+    ///   - padding: Margen interno.
+    ///   - content: Constructor de la vista de contenido.
     init(
         cornerRadius: CGFloat = AppConstants.cornerRadius,
         padding: CGFloat = AppConstants.cardPadding,

@@ -7,9 +7,13 @@
 
 import SwiftUI
 
+/// Vista principal de autenticación que presenta el formulario de inicio de sesión.
+/// Utiliza un diseño de "Glassmorphism" sobre un fondo degradado vibrante.
 struct LoginView: View {
+    /// Instancia del ViewModel que maneja la lógica de autenticación.
     @StateObject private var viewModel = LoginViewModel()
     @Environment(\.colorScheme) var colorScheme
+    /// Callback que se ejecuta cuando el inicio de sesión es exitoso.
     let onLoginSuccess: () -> Void
     
     // Gradiente intenso inspirado en el icono de la app

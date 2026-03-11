@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-/// Vista datos del cliente
+/// Sección del formulario que recolecta los datos personales del cliente.
 struct CustomerSectionView: View {
+    /// ViewModel compartido del formulario.
     @ObservedObject var viewModel: RepairFormViewModel
     @FocusState private var focusedField: RepairFormField?
     

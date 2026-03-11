@@ -8,16 +8,25 @@
 import Foundation
 import SwiftUI
 
+/// Define los tipos de dispositivos que la aplicación puede gestionar.
 enum DeviceType: String, Codable, CaseIterable, Identifiable {
+    /// Dispositivos móviles inteligentes.
     case phone = "Celular"
+    /// Computadoras portátiles.
     case laptop = "Laptop"
+    /// Computadoras de escritorio.
     case desktop = "PC"
+    /// Tablets y dispositivos similares.
     case tablet = "Tablet"
+    /// Consolas de videojuegos.
     case console = "Consola"
+    /// Cualquier otro tipo de dispositivo no listado.
     case other = "Otro"
     
+    /// Identificador único para conformidad con el protocolo Identifiable.
     var id: String { rawValue }
     
+    /// Nombre del icono de SF Symbols asociado al tipo de dispositivo.
     var icon: String {
         switch self {
         case .phone:
@@ -35,6 +44,7 @@ enum DeviceType: String, Codable, CaseIterable, Identifiable {
         }
     }
     
+    /// Color temático asociado al tipo de dispositivo para la interfaz.
     var color: Color {
         switch self {
         case .phone:

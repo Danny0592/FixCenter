@@ -6,21 +6,23 @@
 //
 
 import SwiftUI
-// TODO: Componente de servicio de reparacion
+/// Una tarjeta que muestra un resumen de una orden de reparación.
+/// Incluye el folio, estado, dispositivo, cliente y tiempo transcurrido.
 struct RepairCard: View {
+    /// La reparación cuyos datos se van a visualizar.
     let repair: Repair
+    /// Acción que se dispara al tocar la tarjeta.
     let onTap: () -> Void
     
     var body: some View {
         Button(action: onTap) {
             GlassCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    // Header con estado y folio
                     HStack {
-//                        Satatus (Circulo)
+                        /// Insignia visual del estado (círculo pulsante).
                         StatusBadge(status: repair.status, size: 20)
                         
-//                        Folio de la reparacion
+                        /// Folio de la reparación (si existe).
                         if let folio = repair.folio, !folio.isEmpty {
                             Text(folio)
                                 .font(.caption)
@@ -36,7 +38,8 @@ struct RepairCard: View {
                         }
                         
                         Spacer()
-//                        Status en texto
+                        
+                        /// Etiqueta de texto con el nombre del estado.
                         Text(repair.status.rawValue)
                             .font(.caption)
                             .fontWeight(.semibold)
@@ -51,22 +54,23 @@ struct RepairCard: View {
                     
                     // Información del dispositivo
                     HStack(spacing: 12) {
+                        /// Icono del tipo de dispositivo con fondo circular.
                         ZStack {
                             Circle()
                                 .fill(repair.device.type.color.opacity(0.2))
                                 .frame(width: 50, height: 50)
-//                            Tipo de dispositivo
+                            
                             Image(systemName: repair.device.type.icon)
                                 .font(.title2)
                                 .foregroundColor(repair.device.type.color)
                         }
-//                        Marca y modelo del dispositivo
+                        
+                        /// Marca, modelo y cliente.
                         VStack(alignment: .leading, spacing: 4) {
                             Text(repair.device.displayName)
                                 .font(.headline)
                                 .foregroundColor(.primary)
                             
-//                            Nombre del cliente
                             Text(repair.customer.fullName)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
@@ -75,7 +79,7 @@ struct RepairCard: View {
                         Spacer()
                     }
                     
-                    // Descripción del problema
+                    // Descripción del problema (limitada a 2 líneas)
                     if !repair.problemDescription.isEmpty {
                         Text(repair.problemDescription)
                             .font(.caption)
@@ -83,7 +87,7 @@ struct RepairCard: View {
                             .lineLimit(2)
                     }
                     
-                    // Fecha de registro
+                    // Fecha de registro y días transcurridos
                     HStack {
                         Label(
                             repair.receivedDate.formatted(date: .abbreviated, time: .omitted),
@@ -111,6 +115,8 @@ struct RepairCard: View {
     }
 }
 
+/// Estilo de botón personalizado para la tarjeta de reparación.
+/// Proporciona un efecto de escala sutil al ser presionado.
 struct RepairCardButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label

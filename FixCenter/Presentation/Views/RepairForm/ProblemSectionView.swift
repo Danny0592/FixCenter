@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-/// Vista de descripcion del problema
+/// Sección del formulario para describir el problema técnico y capturar fotos iniciales.
 struct ProblemSectionView: View {
+    /// ViewModel compartido del formulario.
     @ObservedObject var viewModel: RepairFormViewModel
     @FocusState private var focusedField: RepairFormField?
     

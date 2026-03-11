@@ -8,16 +8,25 @@
 import Foundation
 import SwiftUI
 
+/// Representa los posibles estados de una orden de reparación en el taller.
 enum RepairStatus: String, Codable, CaseIterable, Identifiable {
+    /// El equipo ha sido recibido pero no se ha iniciado el diagnóstico.
     case received = "Recibido"
+    /// El equipo está siendo revisado para identificar la falla.
     case diagnosing = "En Diagnóstico"
+    /// Se está realizando la reparación física o de software.
     case repairing = "En Reparación"
+    /// La reparación se ha terminado con éxito.
     case completed = "Completado"
+    /// El equipo ha sido devuelto al cliente.
     case delivered = "Entregado"
+    /// La orden de reparación ha sido invalidada o rechazada.
     case cancelled = "Cancelado"
     
+    /// Identificador único (rawValue).
     var id: String { rawValue }
     
+    /// Color distintivo del estado para la interfaz de usuario.
     var color: Color {
         switch self {
         case .received:
@@ -35,6 +44,7 @@ enum RepairStatus: String, Codable, CaseIterable, Identifiable {
         }
     }
     
+    /// Icono descriptivo (SF Symbols) asociado al estado.
     var icon: String {
         switch self {
         case .received:
@@ -52,6 +62,7 @@ enum RepairStatus: String, Codable, CaseIterable, Identifiable {
         }
     }
     
+    /// Degradado visual para tarjetas y elementos destacados.
     var gradient: LinearGradient {
         switch self {
         case .received:

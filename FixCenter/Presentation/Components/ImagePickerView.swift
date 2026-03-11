@@ -7,15 +7,22 @@
 
 import SwiftUI
 import UIKit
-// TODO: Componente de seleccion de imagenes
+/// Componente para la selección y visualización de múltiples imágenes.
+/// Permite capturar fotos con la cámara o seleccionarlas de la galería.
 struct ImagePickerView: View {
+    /// Lista de imágenes seleccionadas por el usuario.
     @Binding var selectedImages: [UIImage]
+    /// Título de la sección.
     let title: String
+    /// Cantidad máxima de imágenes permitidas.
     let maxImages: Int
     
+    /// Controla la visibilidad de la cámara.
     @State private var showCamera = false
+    /// Controla la visibilidad del selector de fotos.
     @State private var showPhotoPicker = false
     
+    /// Inicializa el selector de imágenes.
     init(
         selectedImages: Binding<[UIImage]>,
         title: String = "Seleccionar imágenes",
@@ -102,8 +109,11 @@ struct ImagePickerView: View {
     }
 }
 
+/// Adaptador para utilizar el selector de fotos nativo de iOS en SwiftUI.
 struct PhotoPickerView: UIViewControllerRepresentable {
+    /// Referencia a la lista de imágenes seleccionadas.
     @Binding var selectedImages: [UIImage]
+    /// Límite de selección.
     let maxSelection: Int
     @Environment(\.dismiss) var dismiss
     
@@ -121,6 +131,7 @@ struct PhotoPickerView: UIViewControllerRepresentable {
         Coordinator(self)
     }
     
+    /// Coordinador para manejar los delegados de `UIImagePickerController`.
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         let parent: PhotoPickerView
         
@@ -144,7 +155,9 @@ struct PhotoPickerView: UIViewControllerRepresentable {
     }
 }
 
+/// Adaptador para utilizar la cámara nativa de iOS en SwiftUI.
 struct CameraView: UIViewControllerRepresentable {
+    /// Callback que devuelve la imagen capturada.
     let selectedImage: (UIImage) -> Void
     @Environment(\.dismiss) var dismiss
     
@@ -162,6 +175,7 @@ struct CameraView: UIViewControllerRepresentable {
         Coordinator(self)
     }
     
+    /// Coordinador para los delegados de la cámara.
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         let parent: CameraView
         

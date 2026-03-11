@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
-// TODO: Componente de "Tipo de dispositivo"
+/// Vista que permite al usuario seleccionar el tipo de dispositivo mediante una cuadrícula de tarjetas.
 struct DeviceTypeSelector: View {
+    /// Enlace al tipo de dispositivo seleccionado.
     @Binding var selectedType: DeviceType
     
+    /// Configuración de las columnas de la cuadrícula (3 columnas iguales).
     let columns = [
         GridItem(.flexible()),
         GridItem(.flexible()),
@@ -28,6 +30,7 @@ struct DeviceTypeSelector: View {
                         type: type,
                         isSelected: selectedType == type
                     ) {
+                        /// Cambia el tipo con una animación de resorte.
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                             selectedType = type
                         }
@@ -38,11 +41,16 @@ struct DeviceTypeSelector: View {
     }
 }
 
+/// Tarjeta individual para representar un tipo de dispositivo en el selector.
 struct DeviceTypeCard: View {
+    /// El tipo de dispositivo que representa esta tarjeta.
     let type: DeviceType
+    /// Indica si esta tarjeta es la que está seleccionada actualmente.
     let isSelected: Bool
+    /// Acción a ejecutar cuando se pulsa la tarjeta.
     let action: () -> Void
     
+    /// Estado interno para gestionar el efecto visual de pulsación.
     @State private var isPressed = false
     
     var body: some View {

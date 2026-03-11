@@ -9,9 +9,13 @@ import Foundation
 import UIKit
 import SwiftUI
 
+/// Implementación encargada de gestionar el almacenamiento físico de imágenes.
+/// Guarda las fotos en un directorio dedicado dentro de la carpeta Documents.
 class ImageStorageService: ImageService {
+    /// Ruta del directorio donde se guardan las imágenes de reparación.
     private let imagesDirectory: URL
     
+    /// Inicializa el servicio y asegura que el directorio de imágenes exista.
     init() {
         let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         imagesDirectory = documentsPath.appendingPathComponent("RepairImages", isDirectory: true)
@@ -20,6 +24,7 @@ class ImageStorageService: ImageService {
         try? FileManager.default.createDirectory(at: imagesDirectory, withIntermediateDirectories: true)
     }
     
+    /// Comprime la imagen de forma iterativa hasta alcanzar el tamaño máximo solicitado.
     func compressImage(_ image: UIImage, maxSizeKB: Int = 500) -> Data? {
         var compression: CGFloat = 1.0
         var imageData = image.jpegData(compressionQuality: compression)
@@ -32,12 +37,14 @@ class ImageStorageService: ImageService {
         return imageData
     }
     
+    /// Escribe los datos de la imagen en el disco.
     func saveImage(_ data: Data, filename: String) throws -> URL {
         let fileURL = imagesDirectory.appendingPathComponent(filename)
         try data.write(to: fileURL)
         return fileURL
     }
     
+    /// Intenta cargar una imagen desde una URL específica.
     func loadImage(from url: URL) -> UIImage? {
         guard let data = try? Data(contentsOf: url) else {
             return nil
@@ -45,6 +52,7 @@ class ImageStorageService: ImageService {
         return UIImage(data: data)
     }
     
+    /// Elimina físicamente el archivo de imagen de la URL proporcionada.
     func deleteImage(at url: URL) throws {
         try FileManager.default.removeItem(at: url)
     }
