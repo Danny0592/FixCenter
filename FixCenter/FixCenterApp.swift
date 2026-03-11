@@ -17,13 +17,31 @@ struct FixCenterApp: App {
         RepairRepositoryImpl(storageService: storageService)
     }
     
+    @State private var isAuthenticated = true
+    
     var body: some Scene {
         WindowGroup {
-            RepairListView(
-                viewModel: RepairListViewModel(
-                    repository: repairRepository
+            if isAuthenticated {
+                RepairListView(
+                    viewModel: RepairListViewModel(
+                        repository: repairRepository
+                    )
                 )
-            )
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing).combined(with: .opacity),
+                    removal: .move(edge: .leading).combined(with: .opacity)
+                ))
+            } else {
+                LoginView {
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        isAuthenticated = true
+                    }
+                }
+                .transition(.asymmetric(
+                    insertion: .move(edge: .leading).combined(with: .opacity),
+                    removal: .move(edge: .trailing).combined(with: .opacity)
+                ))
+            }
         }
     }
 }
