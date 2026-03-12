@@ -6,15 +6,22 @@
 //
 
 import SwiftUI
-// TODO: Componente de botones
+/// Un botón con fondo degradado que soporta estados de carga e iconos.
 struct GradientButton: View {
+    /// Texto descriptivo del botón.
     let title: String
+    /// Acción que se ejecuta al pulsar el botón.
     let action: () -> Void
+    /// El degradado que se aplicará al fondo.
     var gradient: LinearGradient = AppColors.primaryGradient
+    /// Nombre del icono de SF Symbols opcional.
     var icon: String? = nil
+    /// Si es true, muestra un indicador de carga y deshabilita el botón.
     var isLoading: Bool = false
+    /// Si es true, el botón no se expande a todo lo ancho.
     var isCompact: Bool = false
     
+    /// Inicializa un nuevo botón degradado.
     init(
         title: String,
         action: @escaping () -> Void,

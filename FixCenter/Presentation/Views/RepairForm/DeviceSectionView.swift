@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-/// Vista de informacion del dispositivo
+/// Sección del formulario que recolecta las especificaciones del dispositivo.
 struct DeviceSectionView: View {
+    /// ViewModel compartido del formulario.
     @ObservedObject var viewModel: RepairFormViewModel
     @FocusState private var focusedField: RepairFormField?
     

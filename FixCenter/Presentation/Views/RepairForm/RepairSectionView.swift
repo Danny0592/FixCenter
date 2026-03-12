@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-/// Vista de detalle de reparacion
+/// Sección final del formulario para registrar la solución técnica, precio y evidencia final.
 struct RepairSectionView: View {
+    /// ViewModel compartido del formulario.
     @ObservedObject var viewModel: RepairFormViewModel
     @FocusState private var focusedField: RepairFormField?
     @State private var priceText: String = ""

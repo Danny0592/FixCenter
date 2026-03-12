@@ -7,18 +7,31 @@
 
 import SwiftUI
 // TODO: Componente de "placeholder"
+/// Un campo de texto personalizado con etiqueta flotante y soporte para iconos y estados de foco.
 struct FloatingTextField: View {
+    /// El título que se muestra arriba del campo.
     let title: String
+    /// Enlace al texto ingresado en el campo.
     @Binding var text: String
+    /// Texto de sugerencia cuando el campo está vacío.
     var placeholder: String = ""
+    /// Tipo de teclado que se mostrará.
     var keyboardType: UIKeyboardType = .default
+    /// Si es true, oculta el texto (para contraseñas).
     var isSecure: Bool = false
+    /// Nombre del icono de SF Symbols opcional.
+    var icon: String? = nil
+    /// Enlace al estado de foco global del formulario.
     var focusState: FocusState<RepairFormField?>.Binding? = nil
+    /// El valor de este campo en el enum de foco.
     var focusValue: RepairFormField? = nil
     
+    /// Estado de foco interno.
     @FocusState private var internalIsFocused: Bool
+    /// Color del borde que cambia según el estado de foco.
     @State private var borderColor: Color = .gray.opacity(0.3)
     
+    /// Determina si el campo está actualmente enfocado.
     private var isCurrentlyFocused: Bool {
         if let focusState = focusState, let focusValue = focusValue {
             return focusState.wrappedValue == focusValue
@@ -32,7 +45,15 @@ struct FloatingTextField: View {
                 .font(.caption)
                 .foregroundColor(.blue)
             
-            HStack {
+            HStack(spacing: 12) {
+                if let iconName = icon {
+                    Image(systemName: iconName)
+                        .foregroundColor(.blue.opacity(0.8))
+                        .font(.system(size: 18))
+                        .frame(width: 20)
+                }
+                
+                /// Campo de entrada de texto.
                 ZStack(alignment: .leading) {
                     if text.isEmpty && !isCurrentlyFocused {
                         Text(placeholder.isEmpty ? title : placeholder)
@@ -55,6 +76,7 @@ struct FloatingTextField: View {
                     .disableAutocorrection(true)
                 }
                 
+                /// Botón para limpiar el contenido del campo.
                 if !text.isEmpty && isCurrentlyFocused {
                     Button(action: {
                         text = ""

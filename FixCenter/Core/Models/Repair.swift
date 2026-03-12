@@ -7,22 +7,54 @@
 
 import Foundation
 
+/// Representa una orden de reparación integral en FixCenter.
+/// Centraliza la información del cliente, el dispositivo, el estado del trabajo y la facturación.
 struct Repair: Identifiable, Codable, Hashable {
+    /// Identificador único de la reparación.
     var id: UUID
+    /// Folio o ticket de servicio (opcional).
     var folio: String?
+    /// Información del cliente propietario.
     var customer: Customer
+    /// Detalles del dispositivo a reparar.
     var device: Device
+    /// Descripción del problema reportado por el cliente.
     var problemDescription: String
+    /// Técnico encargado de realizar el trabajo.
     var assignedTechnician: String
+    /// Estado actual del flujo de reparación.
     var status: RepairStatus
+    /// Fecha en la que se recibió el equipo.
     var receivedDate: Date
+    /// Fecha estimada o real de entrega (opcional).
     var deliveryDate: Date?
+    /// Fotografías del estado inicial del equipo.
     var initialPhotos: [Data]
+    /// Fotografías del trabajo finalizado.
     var finalPhotos: [Data]
+    /// Detalle del trabajo técnico realizado.
     var workPerformed: String
+    /// Notas internas o aclaraciones adicionales.
     var notes: String
+    /// Costo total de la reparación (opcional).
     var price: Double?
     
+    /// Inicializa una nueva orden de reparación.
+    /// - Parameters:
+    ///   - id: ID único.
+    ///   - folio: Folio de servicio.
+    ///   - customer: Datos del cliente.
+    ///   - device: Datos del equipo.
+    ///   - problemDescription: Qué falla presenta.
+    ///   - assignedTechnician: Quién lo repara.
+    ///   - status: Estado inicial (por defecto .received).
+    ///   - receivedDate: Cuándo entra al taller.
+    ///   - deliveryDate: Cuándo se entrega.
+    ///   - initialPhotos: Fotos de entrada.
+    ///   - finalPhotos: Fotos de salida.
+    ///   - workPerformed: Qué se le hizo.
+    ///   - notes: Comentarios extra.
+    ///   - price: Precio final.
     init(
         id: UUID = UUID(),
         folio: String? = nil,
@@ -79,14 +111,17 @@ struct Repair: Identifiable, Codable, Hashable {
 }
 
 extension Repair {
+    /// Número de días transcurridos desde que se recibió el equipo.
     var daysInRepair: Int {
         Calendar.current.dateComponents([.day], from: receivedDate, to: Date()).day ?? 0
     }
     
+    /// Indica si la reparación ha excedido el tiempo estándar (7 días) y sigue pendiente.
     var isOverdue: Bool {
         daysInRepair > 7 && status != .delivered && status != .cancelled
     }
     
+    /// Representación amigable del precio con formato de moneda (MXN).
     var formattedPrice: String {
         guard let price = price else { return "No especificado" }
         let formatter = NumberFormatter()

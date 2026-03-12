@@ -10,32 +10,46 @@ import SwiftUI
 import UIKit
 import Combine
 
+/// ViewModel que gestiona el flujo de creación y edición de una reparación a través de varios pasos.
+/// Controla la navegación entre secciones, la validación de campos y el guardado final.
 @MainActor
 class RepairFormViewModel: ObservableObject {
+    /// Paso actual del formulario (0 a totalSteps-1).
     @Published var currentStep: Int = 0
+    /// La reparación que se está creando o editando.
     @Published var repair: Repair = Repair()
+    /// Imágenes temporales del estado inicial.
     @Published var initialImages: [UIImage] = []
+    /// Imágenes temporales del trabajo finalizado.
     @Published var finalImages: [UIImage] = []
+    /// Indica si se está guardando la información.
     @Published var isLoading: Bool = false
+    /// Mensaje de error para mostrar en el formulario.
     @Published var errorMessage: String? = nil
     
+    /// Repositorio de datos.
     private let repository: RepairRepository
+    /// Servicio de procesamiento de imágenes.
     private let imageService: ImageService
     
+    /// Número total de secciones del formulario.
     let totalSteps = 4
+    /// ID original si estamos editando (nil si es una nueva reparación).
     private var originalRepairId: UUID?
     
+    /// Propiedad computada que indica si estamos en modo edición o creación.
     var isEditing: Bool {
         originalRepairId != nil
     }
     
+    /// Inicializa el ViewModel, opcionalmente con una reparación existente para editar.
     init(repository: RepairRepository, imageService: ImageService, repair: Repair? = nil) {
         self.repository = repository
         self.imageService = imageService
         if let repair = repair {
             self.repair = repair
             self.originalRepairId = repair.id
-            // Cargar imágenes existentes
+            // Cargar imágenes existentes para la interfaz
             self.initialImages = repair.initialPhotos.compactMap { UIImage(data: $0) }
             self.finalImages = repair.finalPhotos.compactMap { UIImage(data: $0) }
         } else {
@@ -43,6 +57,7 @@ class RepairFormViewModel: ObservableObject {
         }
     }
     
+    /// Indica si se han completado los campos requeridos para avanzar al siguiente paso.
     var canProceedToNextStep: Bool {
         switch currentStep {
         case 0: // Datos del cliente
@@ -67,6 +82,7 @@ class RepairFormViewModel: ObservableObject {
         }
     }
     
+    /// Avanza al siguiente paso del formulario con animación.
     func nextStep() {
         if currentStep < totalSteps - 1 {
             withAnimation(.spring()) {
@@ -75,6 +91,7 @@ class RepairFormViewModel: ObservableObject {
         }
     }
     
+    /// Retrocede al paso anterior con animación.
     func previousStep() {
         if currentStep > 0 {
             withAnimation(.spring()) {
@@ -83,6 +100,7 @@ class RepairFormViewModel: ObservableObject {
         }
     }
     
+    /// Procesa las imágenes y guarda la reparación en el repositorio.
     func saveRepair() async {
         isLoading = true
         errorMessage = nil
@@ -90,18 +108,16 @@ class RepairFormViewModel: ObservableObject {
         do {
             var repairToSave = repair
             
-            // Generar folio para nuevas reparaciones
+            // Generar folio solo para nuevas reparaciones
             if !isEditing {
                 repairToSave.folio = try await generateNextFolio()
             }
             
-            // Procesar imágenes iniciales
+            // Procesar y comprimir imágenes (iniciales y finales)
             repairToSave.initialPhotos = try await processImages(initialImages)
-            
-            // Procesar imágenes finales
             repairToSave.finalPhotos = try await processImages(finalImages)
             
-            // Guardar reparación
+            // Persistir cambios
             try await repository.saveRepair(repairToSave)
         } catch {
             errorMessage = "Error al guardar reparación: \(error.localizedDescription)"
@@ -110,6 +126,7 @@ class RepairFormViewModel: ObservableObject {
         isLoading = false
     }
     
+    /// Genera automáticamente el siguiente folio basado en el año actual (ej. OS-2024-0001).
     private func generateNextFolio() async throws -> String {
         let repairs = try await repository.fetchRepairs()
         let year = Calendar.current.component(.year, from: Date())
@@ -125,6 +142,7 @@ class RepairFormViewModel: ObservableObject {
         return "\(prefix)\(String(format: "%04d", nextNumber))"
     }
     
+    /// Comprime un set de imágenes utilizando el servicio de imágenes.
     private func processImages(_ images: [UIImage]) async throws -> [Data] {
         var imageData: [Data] = []
         

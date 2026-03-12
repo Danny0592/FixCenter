@@ -7,12 +7,21 @@
 
 import SwiftUI
 /// Componente de StatusBadge (circulos)
+/// Un indicador visual (círculo) que representa el estado de una reparación.
+/// Incluye un efecto de pulsación animado para estados activos.
 struct StatusBadge: View {
+    /// El estado de la reparación que define el color y el degradado.
     let status: RepairStatus
+    /// Diámetro total del indicador.
     let size: CGFloat
     
+    /// Controla la animación de pulsación.
     @State private var isPulsing = false
     
+    /// Inicializa la insignia de estado.
+    /// - Parameters:
+    ///   - status: Estado actual.
+    ///   - size: Tamaño (por defecto 20).
     init(status: RepairStatus, size: CGFloat = 20) {
         self.status = status
         self.size = size

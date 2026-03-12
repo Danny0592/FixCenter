@@ -7,9 +7,13 @@
 
 import Foundation
 
+/// Implementación de almacenamiento local basada en `UserDefaults`.
+/// Gestiona la persistencia de las reparaciones serializándolas a formato JSON.
 class LocalStorageService: StorageService {
+    /// Llave utilizada para almacenar las reparaciones en `UserDefaults`.
     private let repairsKey = "saved_repairs"
     
+    /// Guarda o actualiza una reparación en la base de datos local.
     func saveRepair(_ repair: Repair) async throws {
         var repairs = try await fetchRepairs()
         if let index = repairs.firstIndex(where: { $0.id == repair.id }) {
@@ -20,6 +24,7 @@ class LocalStorageService: StorageService {
         try saveRepairs(repairs)
     }
     
+    /// Obtiene la lista completa de reparaciones guardadas.
     func fetchRepairs() async throws -> [Repair] {
         guard let data = UserDefaults.standard.data(forKey: repairsKey) else {
             return []
@@ -27,21 +32,25 @@ class LocalStorageService: StorageService {
         return try JSONDecoder().decode([Repair].self, from: data)
     }
     
+    /// Recupera una reparación individual por su ID.
     func fetchRepair(id: UUID) async throws -> Repair? {
         let repairs = try await fetchRepairs()
         return repairs.first { $0.id == id }
     }
     
+    /// Actualiza los datos de una reparación existente.
     func updateRepair(_ repair: Repair) async throws {
         try await saveRepair(repair)
     }
     
+    /// Elimina una reparación de la lista local.
     func deleteRepair(id: UUID) async throws {
         var repairs = try await fetchRepairs()
         repairs.removeAll { $0.id == id }
         try saveRepairs(repairs)
     }
     
+    /// Filtra las reparaciones según criterios de búsqueda (Folio, Cliente, Dispositivo, Problema).
     func searchRepairs(query: String) async throws -> [Repair] {
         let repairs = try await fetchRepairs()
         let lowerQuery = query.lowercased()
@@ -54,11 +63,13 @@ class LocalStorageService: StorageService {
         }
     }
     
+    /// Filtra la lista de reparaciones por su estatus.
     func filterRepairs(by status: RepairStatus) async throws -> [Repair] {
         let repairs = try await fetchRepairs()
         return repairs.filter { $0.status == status }
     }
     
+    /// Método privado para persistir la colección completa en `UserDefaults`.
     private func saveRepairs(_ repairs: [Repair]) throws {
         let data = try JSONEncoder().encode(repairs)
         UserDefaults.standard.set(data, forKey: repairsKey)

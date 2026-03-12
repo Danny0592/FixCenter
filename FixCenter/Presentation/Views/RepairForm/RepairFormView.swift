@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
-/// Vista para generar un servicio de reparacion
+/// Vista que contiene el formulario multi-paso para registrar o editar una reparación.
+/// Administra la navegación entre secciones y las confirmaciones de guardado.
 struct RepairFormView: View {
+    /// ViewModel que mantiene el estado global del formulario.
     @ObservedObject var viewModel: RepairFormViewModel
     @Environment(\.dismiss) var dismiss
+    /// Controla la visibilidad de la alerta de éxito al guardar.
     @State private var showSaveConfirmation = false
     
     var body: some View {
