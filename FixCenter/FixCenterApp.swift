@@ -22,7 +22,7 @@ struct FixCenterApp: App {
     }
     
     /// Estado que controla si el usuario ha iniciado sesión.
-    @State private var isAuthenticated = true
+    @State private var isAuthenticated = false
     
     var body: some Scene {
         WindowGroup {
