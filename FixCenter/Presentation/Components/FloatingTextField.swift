@@ -8,7 +8,7 @@
 import SwiftUI
 // TODO: Componente de "placeholder"
 /// Un campo de texto personalizado con etiqueta flotante y soporte para iconos y estados de foco.
-struct FloatingTextField: View {
+struct FloatingTextField<F: Hashable>: View {
     /// El título que se muestra arriba del campo.
     let title: String
     /// Enlace al texto ingresado en el campo.
@@ -22,9 +22,9 @@ struct FloatingTextField: View {
     /// Nombre del icono de SF Symbols opcional.
     var icon: String? = nil
     /// Enlace al estado de foco global del formulario.
-    var focusState: FocusState<RepairFormField?>.Binding? = nil
+    var focusState: FocusState<F?>.Binding? = nil
     /// El valor de este campo en el enum de foco.
-    var focusValue: RepairFormField? = nil
+    var focusValue: F? = nil
     
     /// Estado de foco interno.
     @FocusState private var internalIsFocused: Bool
@@ -119,13 +119,13 @@ extension View {
 
 #Preview {
     VStack(spacing: 20) {
-        FloatingTextField(
+        FloatingTextField<RepairFormField>(
             title: "Nombre completo",
             text: .constant(""),
             placeholder: "Ingresa el nombre"
         )
         
-        FloatingTextField(
+        FloatingTextField<RepairFormField>(
             title: "Teléfono",
             text: .constant(""),
             placeholder: "Ingresa el teléfono",

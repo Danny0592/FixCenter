@@ -16,6 +16,15 @@ struct LoginView: View {
     /// Callback que se ejecuta cuando el inicio de sesión es exitoso.
     let onLoginSuccess: () -> Void
     
+    /// Define los campos enfocables en la vista de inicio de sesión.
+    enum LoginFormField: Hashable {
+        case username
+        case password
+    }
+    
+    /// Estado de foco para los campos del formulario.
+    @FocusState private var focusedField: LoginFormField?
+    
     // Gradiente intenso inspirado en el icono de la app
     private let loginGradient = LinearGradient(
         colors: [
@@ -56,94 +65,110 @@ struct LoginView: View {
             .ignoresSafeArea()
             
             ScrollView {
-                VStack(spacing: 40) {
-                    // Header: Logo o Icono
-                    VStack(spacing: 16) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 24)
-                                .fill(Color.white.opacity(0.2))
-                                .frame(width: 100, height: 100)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 24)
-                                        .stroke(Color.white.opacity(0.4), lineWidth: 1)
-                                )
-                            
-                            Image("icono")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 80, height: 80)
-                                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
-                                .cornerRadius(10)
-                        }
-                        .padding(.top, 60)
-                        
-                        Text("FixCenter")
-                            .font(.system(size: 40, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
-                        
-                        Text("Gestión Profesional de Reparaciones")
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.8))
-                    }
-                    
-                    // Formulario con Glassmorphism
-                    GlassCard {
-                        VStack(spacing: 24) {
-                            Text("Iniciar Sesión")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundColor(.primary)
-                            
-                            VStack(spacing: 20) {
-                                FloatingTextField(
-                                    title: "Usuario o Correo",
-                                    text: $viewModel.username,
-                                    icon: "person.fill"
-                                )
+                ScrollViewReader { proxy in
+                    VStack(spacing: 40) {
+                        // Header: Logo o Icono
+                        VStack(spacing: 16) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 24)
+                                    .fill(Color.white.opacity(0.2))
+                                    .frame(width: 100, height: 100)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 24)
+                                            .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                                    )
                                 
-                                FloatingTextField(
-                                    title: "Contraseña",
-                                    text: $viewModel.password,
-                                    isSecure: true,
-                                    icon: "lock.fill"
+                                Image("icono")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                    .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
+                                    .cornerRadius(10)
+                            }
+                            .padding(.top, 60)
+                            
+                            Text("FixCenter")
+                                .font(.system(size: 40, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
+                            
+                            Text("Gestión Profesional de Reparaciones")
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.8))
+                        }
+                        
+                        // Formulario con Glassmorphism
+                        GlassCard {
+                            VStack(spacing: 24) {
+                                Text("Iniciar Sesión")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.primary)
+                                
+                                VStack(spacing: 20) {
+                                    FloatingTextField(
+                                        title: "Usuario o Correo",
+                                        text: $viewModel.username,
+                                        icon: "person.fill",
+                                        focusState: $focusedField,
+                                        focusValue: .username
+                                    )
+                                    .id(LoginFormField.username)
+                                    
+                                    FloatingTextField(
+                                        title: "Contraseña",
+                                        text: $viewModel.password,
+                                        isSecure: true,
+                                        icon: "lock.fill",
+                                        focusState: $focusedField,
+                                        focusValue: .password
+                                    )
+                                    .id(LoginFormField.password)
+                                }
+                                
+                                if let error = viewModel.errorMessage {
+                                    Text(error)
+                                        .font(.caption)
+                                        .foregroundColor(.red)
+                                        .padding(.top, -8)
+                                }
+                                
+                                GradientButton(
+                                    title: "Entrar",
+                                    action: {
+                                        viewModel.login()
+                                    },
+                                    gradient: AppColors.primaryGradient,
+                                    icon: "arrow.right",
+                                    isLoading: viewModel.isLoading
                                 )
+                                .padding(.top, 8)
+                                
+                                Button(action: {
+                                    // Acción futura: Recuperar contraseña
+                                }) {
+                                    Text("¿Olvidaste tu contraseña?")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
                             }
-                            
-                            if let error = viewModel.errorMessage {
-                                Text(error)
-                                    .font(.caption)
-                                    .foregroundColor(.red)
-                                    .padding(.top, -8)
-                            }
-                            
-                            GradientButton(
-                                title: "Entrar",
-                                action: {
-                                    viewModel.login()
-                                },
-                                gradient: AppColors.primaryGradient,
-                                icon: "arrow.right",
-                                isLoading: viewModel.isLoading
-                            )
-                            .padding(.top, 8)
-                            
-                            Button(action: {
-                                // Acción futura: Recuperar contraseña
-                            }) {
-                                Text("¿Olvidaste tu contraseña?")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                            .padding(.vertical, 8)
+                        }
+                        .padding(.horizontal)
+                        
+                        Spacer()
+                    }
+                    .padding()
+                    .onChange(of: focusedField) { newValue in
+                        if let field = newValue {
+                            withAnimation(.spring()) {
+                                proxy.scrollTo(field, anchor: UnitPoint(x: 0.5, y: 0.8))
                             }
                         }
-                        .padding(.vertical, 8)
                     }
-                    .padding(.horizontal)
-                    
-                    Spacer()
                 }
-                .padding()
             }
+            .hideKeyboardOnTap()
         }
         .onAppear {
             viewModel.onLoginSuccess = onLoginSuccess
