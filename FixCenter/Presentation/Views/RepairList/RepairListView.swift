@@ -18,13 +18,19 @@ struct RepairListView: View {
     /// Estado de foco para el campo de búsqueda.
     @FocusState private var isSearchFocused: Bool
     
+    /// Acción para cerrar sesión.
+    var onLogout: () -> Void
+    
     /// Inicializa la vista con su ViewModel.
-    init(viewModel: RepairListViewModel) {
+    init(viewModel: RepairListViewModel, onLogout: @escaping () -> Void = {}) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.onLogout = onLogout
     }
+    
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
+            ZStack(alignment: .bottomTrailing) {
+                VStack(spacing: 0) {
                 // Header con búsqueda y filtros (fijos arriba)
                 VStack(spacing: 16) {
                     searchSection
@@ -65,6 +71,22 @@ struct RepairListView: View {
                         await viewModel.loadRepairs()
                     }
                 }
+                }
+                
+                // Botón flotante para cerrar sesión
+                Button(action: {
+                    onLogout()
+                }) {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .font(.system(size: 24))
+                        .foregroundColor(.white)
+                        .frame(width: 56, height: 56)
+                        .background(Color.red.opacity(0.8))
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.2), radius: 5, x: 3, y: 5)
+                }
+                .padding()
+                .padding(.bottom, 16)
             }
             .background(AppColors.backgroundGradient.ignoresSafeArea())
             .navigationTitle("FixCenter")

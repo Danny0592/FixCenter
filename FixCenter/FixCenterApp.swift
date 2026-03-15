@@ -30,7 +30,12 @@ struct FixCenterApp: App {
                 RepairListView(
                     viewModel: RepairListViewModel(
                         repository: repairRepository
-                    )
+                    ),
+                    onLogout: {
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            isAuthenticated = false
+                        }
+                    }
                 )
                 .transition(.asymmetric(
                     insertion: .move(edge: .trailing).combined(with: .opacity),
